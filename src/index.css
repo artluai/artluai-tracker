@@ -1,0 +1,109 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #08090a;
+  --surface: #0e0f11;
+  --border: #1a1d22;
+  --border-hover: #282c34;
+  --text: #c0c4cc;
+  --text-bright: #f0f1f3;
+  --dim: #555b66;
+  --dimmer: #3a3f48;
+  --green: #4ade80;
+  --green-dark: #22c55e;
+  --green-bg: #062b12;
+  --green-border: #163d28;
+  --blue: #60a5fa;
+  --blue-bg: #0c1a2e;
+  --yellow: #facc15;
+  --yellow-bg: #1f1a05;
+  --red: #f87171;
+  --red-bg: #1a1011;
+  --red-border: #3d1818;
+  --font: 'IBM Plex Mono', 'SF Mono', Consolas, monospace;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--green);
+  text-decoration: none;
+  opacity: 0.8;
+}
+a:hover {
+  opacity: 1;
+}
+
+button {
+  font-family: var(--font);
+  cursor: pointer;
+}
+
+input, select, textarea {
+  font-family: var(--font);
+  width: 100%;
+  background: #0a0b0c;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-bright);
+  font-size: 12px;
+  padding: 7px 10px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #2e4a38;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 17px;
+  background: var(--green);
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+/* Status badges */
+.status {
+  font-size: 9px;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+.status-launched { background: var(--green-bg); color: var(--green); }
+.status-building { background: var(--blue-bg); color: var(--blue); }
+.status-idea { background: var(--yellow-bg); color: var(--yellow); }
+.status-abandoned { background: var(--red-bg); color: var(--red); }
+
+/* Visibility badges */
+.vis-public { color: var(--green); }
+.vis-private { color: var(--dimmer); }
+.vis-gated { color: var(--yellow); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--dim); }
