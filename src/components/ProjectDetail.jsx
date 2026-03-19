@@ -53,12 +53,11 @@ function Sec({ label, children }) {
   return <div style={{ marginBottom: 16 }}><div style={{ fontSize: 9, color: "var(--dim)", textTransform: "uppercase", letterSpacing: 1.5, marginBottom: 6 }}>{label}</div>{children}</div>;
 }
 
-function isEmbed(u) { return u.includes("youtube.com") || u.includes("youtu.be") || u.includes("loom.com") || u.includes("screen.studio/share"); }
+function isEmbed(u) { return u.includes("youtube.com") || u.includes("youtu.be") || u.includes("loom.com"); }
 function toEmbed(u) {
   if (u.includes("youtube.com/watch")) return `https://www.youtube.com/embed/${new URL(u).searchParams.get("v")}`;
   if (u.includes("youtu.be/")) return `https://www.youtube.com/embed/${u.split("youtu.be/")[1]?.split("?")[0]}`;
   if (u.includes("loom.com/share/")) return `https://www.loom.com/embed/${u.split("loom.com/share/")[1]?.split("?")[0]}`;
-  if (u.includes("screen.studio/share/")) return `https://screen.studio/embed/${u.split("screen.studio/share/")[1]?.split("?")[0]}`;
   return u;
 }
 
