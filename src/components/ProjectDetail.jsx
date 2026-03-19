@@ -10,7 +10,7 @@ function isEmbeddable(url) {
   try {
     const { hostname } = new URL(url);
     const EMBEDDABLE = [
-      "netlify.app", "vercel.app", "artlu.ai", "github.io",
+      "netlify.app", "vercel.app", "github.io",
       "pages.dev", "netlify.com", "render.com", "railway.app",
       "fly.dev", "surge.sh",
     ];
