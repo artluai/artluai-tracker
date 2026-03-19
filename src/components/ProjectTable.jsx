@@ -89,7 +89,6 @@ function DesktopRow({ p, isAdmin, expanded, onToggle, onEdit, onDelete, onToggle
         </td>}
         {isAdmin && <td style={{ ...S.td, textAlign: "right" }}>
           <button style={S.opBtn} onClick={e => { e.stopPropagation(); onEdit(); }}>edit</button>
-          <button style={{ ...S.opBtn, color: "#5a2020" }} onClick={e => { e.stopPropagation(); onDelete(); }}>×</button>
         </td>}
       </tr>
       {expanded && <tr><td colSpan={colSpan} style={{ padding: 0 }}><ProjectDetail project={p} isAdmin={isAdmin} /></td></tr>}
@@ -120,7 +119,6 @@ function MobileCard({ p, isAdmin, expanded, onToggle, onEdit, onDelete, onToggle
                 {p.visibility === "public" ? <span className="vis-public">●</span> : <span className="vis-private">○</span>}
               </button>
               <button style={S.opBtn} onClick={e => { e.stopPropagation(); onEdit(); }}>edit</button>
-              <button style={{ ...S.opBtn, color: "#5a2020" }} onClick={e => { e.stopPropagation(); onDelete(); }}>×</button>
             </>
           )}
         </div>

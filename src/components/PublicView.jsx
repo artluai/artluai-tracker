@@ -41,5 +41,5 @@ export default function PublicView() {
 }
 
 const S = {
-  wrap: { maxWidth: 1200, margin: "0 auto", padding: "20px 24px", minHeight: "100vh", boxSizing: "border-box" },
+  wrap: { maxWidth: 1200, margin: "0 auto", padding: "48px 24px 20px", minHeight: "100vh", boxSizing: "border-box" },
 };

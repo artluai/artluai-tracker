@@ -3,12 +3,14 @@ import { useState, useRef } from "react";
 const STATUS_LIST = ["idea", "building", "launched", "abandoned"];
 const VIS_LIST = ["private", "public", "gated"];
 
-export default function ProjectForm({ project, onSave, onCancel, onBackdropClose }) {
+export default function ProjectForm({ project, onSave, onCancel, onBackdropClose, onDelete }) {
   const [form, setForm] = useState({ ...project });
   const [stackInput, setStackInput] = useState((project.stack || []).join(", "));
   const [shotInput, setShotInput] = useState("");
   const [showFF, setShowFF] = useState(false);
   const [ff, setFf] = useState({ name: "", type: "paste", content: "", url: "", visibility: "private" });
+  const [showDanger, setShowDanger] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState("");
   const formRef = useRef(form);
   formRef.current = form;
 
@@ -112,6 +114,23 @@ export default function ProjectForm({ project, onSave, onCancel, onBackdropClose
           <button style={S.cancelBtn} onClick={onCancel}>cancel</button>
           <button style={S.saveBtn} onClick={handleSave}>save</button>
         </div>
+        {onDelete && project.id && (
+          <div style={{ marginTop: 16, borderTop: "1px solid var(--border)", paddingTop: 12 }}>
+            <button onClick={() => setShowDanger(!showDanger)} style={{ background: "none", border: "none", fontFamily: "inherit", fontSize: 11, color: "#5a2020", cursor: "pointer", padding: 0 }}>
+              {showDanger ? "v" : ">"} danger zone
+            </button>
+            {showDanger && (
+              <div style={{ marginTop: 10 }}>
+                <div style={{ fontSize: 11, color: "var(--dim)", marginBottom: 8 }}>type "{project.name}" to confirm deletion</div>
+                <input value={deleteConfirm} onChange={e => setDeleteConfirm(e.target.value)} placeholder={project.name} style={{ marginBottom: 8 }} />
+                <button
+                  onClick={() => { if (deleteConfirm === project.name) onDelete(project.id); }}
+                  style={{ ...S.cancelBtn, background: deleteConfirm === project.name ? "#2a1010" : "none", borderColor: deleteConfirm === project.name ? "#3d1818" : "var(--border)", color: deleteConfirm === project.name ? "#f87171" : "#3a3f48", width: "100%", textAlign: "center", cursor: deleteConfirm === project.name ? "pointer" : "default" }}
+                >delete project</button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

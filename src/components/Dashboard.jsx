@@ -18,7 +18,6 @@ export default function Dashboard() {
   const [projects, setProjects] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
   const [formProject, setFormProject] = useState(null);
-  const [delId, setDelId] = useState(null);
   const [error, setError] = useState(null);
   const [draft, setDraft] = useState(null);
 
@@ -52,8 +51,8 @@ export default function Dashboard() {
     else setFormProject(newProject());
   };
 
-  const handleDelete = async () => {
-    try { await deleteProject(delId); setDelId(null); await load(); }
+  const handleDelete = async (id) => {
+    try { await deleteProject(id); setFormProject(null); await load(); }
     catch (err) { setError("delete failed: " + err.message); }
   };
 
@@ -102,23 +101,11 @@ export default function Dashboard() {
         <button style={S.addBtn} onClick={openAdd}>+ add</button>
       </div>
       {loadingData ? <Loading /> : (
-        <ProjectTable projects={sorted} isAdmin={true} onEdit={(p) => setFormProject(p)} onDelete={(id) => setDelId(id)} onToggleVis={handleToggleVis} />
+        <ProjectTable projects={sorted} isAdmin={true} onEdit={(p) => setFormProject(p)} onToggleVis={handleToggleVis} />
       )}
       <div style={S.footer}>click ● / ○ to toggle visibility · click a row to expand details</div>
 
-      {delId && (
-        <div style={S.overlay} onClick={() => setDelId(null)}>
-          <div style={S.modal} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: 13, color: "var(--red)", fontWeight: 500, marginBottom: 10 }}>$ rm project</div>
-            <div style={{ fontSize: 12, color: "var(--text)", marginBottom: 18 }}>delete "{projects.find(p => p.id === delId)?.name}"?</div>
-            <div style={S.btnRow}>
-              <button style={S.cancelBtn} onClick={() => setDelId(null)}>cancel</button>
-              <button style={S.delBtn} onClick={handleDelete}>delete</button>
-            </div>
-          </div>
-        </div>
-      )}
-      {formProject && <ProjectForm project={formProject} onSave={handleSave} onCancel={handleCancel} onBackdropClose={handleBackdropClose} />}
+      {formProject && <ProjectForm project={formProject} onSave={handleSave} onCancel={handleCancel} onBackdropClose={handleBackdropClose} onDelete={handleDelete} />}
     </Shell>
   );
 }
@@ -127,7 +114,7 @@ function Shell({ children }) { return <div style={S.wrap}>{children}</div>; }
 function Loading() { return <div style={{ padding: "40px 0", textAlign: "center", color: "var(--dim)", fontSize: 11 }}>loading...</div>; }
 
 const S = {
-  wrap: { maxWidth: 1200, margin: "0 auto", padding: "20px 24px", minHeight: "100vh", boxSizing: "border-box" },
+  wrap: { maxWidth: 1200, margin: "0 auto", padding: "48px 24px 20px", minHeight: "100vh", boxSizing: "border-box" },
   toolbar: { display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", padding: "7px 0", marginBottom: 10 },
   addBtn: { background: "var(--green-bg)", border: "1px solid var(--green-border)", color: "var(--green)", fontFamily: "inherit", fontSize: 11, padding: "4px 12px", borderRadius: 3, cursor: "pointer" },
   footer: { fontSize: 10, padding: "10px 0", marginTop: 4, borderTop: "1px solid #131518", color: "var(--dimmer)" },
