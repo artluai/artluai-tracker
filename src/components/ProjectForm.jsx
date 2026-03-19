@@ -51,6 +51,7 @@ export default function ProjectForm({ project, onSave, onCancel, onBackdropClose
           </div>
           <Field label="stack" hint="comma separated"><input value={stackInput} onChange={e => setStackInput(e.target.value)} placeholder="firebase, netlify, claude" /></Field>
           <Field label="live link"><input value={form.link || ""} onChange={e => set("link", e.target.value)} placeholder="https://mysite.com" /></Field>
+          <Field label="embed url" hint="if different from live link — must be iframeable"><input value={form.embed || ""} onChange={e => set("embed", e.target.value)} placeholder="https://mysite.com/tool (leave blank to use live link)" /></Field>
           <Field label="github repo"><input value={form.repo || ""} onChange={e => set("repo", e.target.value)} placeholder="https://github.com/artluai/project" /></Field>
           <Field label="media" hint="youtube, loom, or screen studio url"><input value={form.media || ""} onChange={e => set("media", e.target.value)} placeholder="https://screen.studio/share/..." /></Field>
           <Field label="visibility">

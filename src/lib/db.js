@@ -61,6 +61,7 @@ export function newProject() {
     date: new Date().toISOString().slice(0, 10),
     stack: [],
     link: "",
+    embed: "",
     repo: "",
     media: "",
     screenshots: [],
