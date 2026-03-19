@@ -69,18 +69,18 @@ function DesktopRow({ p, isAdmin, expanded, onToggle, onEdit, onDelete, onToggle
       <tr style={{ cursor: "pointer", transition: "background 0.1s" }} onClick={onToggle}
         onMouseEnter={e => e.currentTarget.style.background = "var(--surface)"}
         onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-        <td style={{ ...S.td, minWidth: 150 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 10, color: "var(--dimmer)", transition: "transform 0.15s", transform: expanded ? "rotate(90deg)" : "rotate(0deg)", display: "inline-block" }}>▶</span>
+        <td style={S.td}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
+            <span style={{ fontSize: 11, color: "var(--dimmer)", transition: "transform 0.15s", transform: expanded ? "rotate(90deg)" : "rotate(0deg)", display: "inline-block", flexShrink: 0, marginTop: 1 }}>▶</span>
             <div>
               <div style={{ color: "var(--text-bright)", fontWeight: 500, fontSize: 12 }}>{p.name}</div>
-              {p.desc && <div style={{ color: "var(--dim)", fontSize: 10, marginTop: 2 }}>{p.desc}</div>}
+              {p.desc && <div style={{ color: "#8a8f9a", fontSize: 11, marginTop: 2, lineHeight: 1.5 }}>{p.desc}</div>}
             </div>
           </div>
         </td>
-        <td style={S.td}><span className={`status status-${p.status}`}>{p.status}</span></td>
-        <td style={S.td}><span style={{ fontSize: 10, color: "var(--dim)" }}>{(p.stack || []).join(", ") || "—"}</span></td>
-        <td style={S.td}><span style={{ fontSize: 10, color: "var(--dim)" }}>{fmtDate(p.date)}</span></td>
+        <td style={S.td}><span className={`status status-${p.status}`} style={{ whiteSpace: "nowrap" }}>{p.status}</span></td>
+        <td style={{ ...S.td, fontSize: 11, color: "var(--dimmer)", lineHeight: 1.5 }}>{(p.stack || []).join(", ") || "—"}</td>
+        <td style={{ ...S.td, fontSize: 11, color: "#8a8f9a", whiteSpace: "nowrap" }}>{fmtDate(p.date)}</td>
         <td style={S.td}><Links p={p} /></td>
         {isAdmin && <td style={{ ...S.td, textAlign: "center" }}>
           <button onClick={e => { e.stopPropagation(); onToggleVis(); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, padding: "2px 6px", lineHeight: 1 }}>
@@ -101,20 +101,17 @@ function MobileCard({ p, isAdmin, expanded, onToggle, onEdit, onDelete, onToggle
   return (
     <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 4, overflow: "hidden", transition: "border-color 0.15s" }}>
       <div style={{ padding: "12px 14px", cursor: "pointer" }} onClick={onToggle}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span style={{ fontSize: 10, color: "var(--dimmer)", transition: "transform 0.15s", transform: expanded ? "rotate(90deg)" : "rotate(0deg)", display: "inline-block" }}>▶</span>
-            <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text-bright)" }}>{p.name}</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 6, flex: 1 }}>
+            <span style={{ fontSize: 11, color: "var(--dimmer)", transition: "transform 0.15s", transform: expanded ? "rotate(90deg)" : "rotate(0deg)", display: "inline-block", flexShrink: 0, marginTop: 1 }}>▶</span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-bright)" }}>{p.name}</span>
           </div>
-          <span className={`status status-${p.status}`}>{p.status}</span>
+          <span className={`status status-${p.status}`} style={{ flexShrink: 0, marginLeft: 8 }}>{p.status}</span>
         </div>
-        {p.desc && <div style={{ fontSize: 10, color: "var(--dim)", marginBottom: 8, paddingLeft: 16 }}>{p.desc}</div>}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", fontSize: 10, color: "var(--dim)", paddingLeft: 16 }}>
-          <span>{(p.stack || []).join(", ") || "—"}</span>
-          <span style={{ color: "var(--dimmer)" }}>|</span>
-          <span>{fmtDate(p.date)}</span>
-        </div>
-        <div style={{ display: "flex", gap: 6, marginTop: 8, paddingLeft: 16, alignItems: "center", flexWrap: "wrap" }}>
+        {p.desc && <div style={{ fontSize: 11, color: "#8a8f9a", lineHeight: 1.6, paddingLeft: 17 }}>{p.desc}</div>}
+        <div style={{ fontSize: 11, color: "var(--dimmer)", paddingLeft: 17, marginTop: 10 }}>{(p.stack || []).join(", ") || "—"}</div>
+        <div style={{ fontSize: 11, paddingLeft: 17, marginTop: 8, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <span style={{ color: "#8a8f9a" }}>{fmtDate(p.date)}</span>
           <Links p={p} />
           {isAdmin && (
             <>
@@ -140,7 +137,7 @@ function fmtDate(d) {
 }
 
 const S = {
-  th: { fontSize: 9, fontWeight: 400, color: "#444952", textAlign: "left", padding: "8px 10px", letterSpacing: 1.5, textTransform: "uppercase", borderBottom: "1px solid var(--border)" },
-  td: { padding: "10px 10px", borderBottom: "1px solid #131518", fontSize: 12, verticalAlign: "middle" },
+  th: { fontSize: 9, fontWeight: 400, color: "#444952", textAlign: "left", padding: "8px 12px", letterSpacing: 1.5, textTransform: "uppercase", borderBottom: "1px solid var(--border)" },
+  td: { padding: "11px 12px", borderBottom: "1px solid #131518", fontSize: 12, verticalAlign: "middle", transition: "background 0.1s" },
   opBtn: { background: "none", border: "none", color: "var(--dim)", fontFamily: "inherit", fontSize: 10, cursor: "pointer", padding: "2px 5px", transition: "color 0.15s" },
 };

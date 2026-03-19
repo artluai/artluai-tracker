@@ -21,7 +21,7 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
     <div style={{ marginBottom: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-          <span style={{ fontSize: 17, fontWeight: 500, color: "#f0f1f3", letterSpacing: -0.5 }}>artluai</span>
+          <span style={{ fontSize: 17, fontWeight: 500, color: "var(--text-bright)", letterSpacing: -0.5 }}>artlu.ai</span>
           <span className="cursor" />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -40,24 +40,24 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
 
       {isPublic ? (
         <>
-          <div style={{ fontSize: 13, color: "#f0f1f3", fontWeight: 500, letterSpacing: -0.3, marginTop: 12, marginBottom: 6 }}>
-            <span style={{ color: "#4ade80" }}>100</span> projects. <span style={{ color: "#4ade80" }}>100</span> days.
+          <div style={{ fontSize: 13, color: "var(--text-bright)", fontWeight: 500, letterSpacing: -0.3, marginTop: 12, marginBottom: 6 }}>
+            <span style={{ color: "var(--green)" }}>100</span> projects. <span style={{ color: "var(--green)" }}>100</span> days.
           </div>
-          <div style={{ fontSize: 11, color: "#555b66", marginBottom: 10 }}>
-            day <span style={{ color: "#4ade80" }}>{day}</span>/100 · <span style={{ color: "#4ade80" }}>{projectCount}</span> shipped · <span style={{ color: "#4ade80" }}>{toGo}</span> to go
+          <div style={{ fontSize: 11, color: "var(--dim)", marginBottom: 10 }}>
+            day <span style={{ color: "var(--green)" }}>{day}</span>/100 · <span style={{ color: "var(--green)" }}>{projectCount}</span> shipped · <span style={{ color: "var(--green)" }}>{toGo}</span> to go
           </div>
-          <div style={{ fontSize: 11, color: "#555b66", fontWeight: 300, letterSpacing: 0.2 }}>
+          <div style={{ fontSize: 11, color: "var(--dim)", fontWeight: 300, letterSpacing: 0.2 }}>
             one person. no coding experience. just AI and an internet connection.
           </div>
         </>
       ) : (
         <div style={{ fontSize: 11, marginTop: 5 }}>
-          <span style={{ color: "#555b66" }}>$ day </span><span style={{ color: "#4ade80" }}>{day}</span>
-          <span style={{ color: "#555b66" }}>/100 · tracking </span><span style={{ color: "#4ade80" }}>{projectCount}</span>
-          <span style={{ color: "#555b66" }}> projects · </span><span style={{ color: "#4ade80" }}>{launchedCount}</span>
-          <span style={{ color: "#555b66" }}> launched · </span><span style={{ color: "#4ade80" }}>{publicCount}</span>
-          <span style={{ color: "#555b66" }}> public · </span><span style={{ color: "#4ade80" }}>{toGo}</span>
-          <span style={{ color: "#555b66" }}> to go</span>
+          <span style={{ color: "var(--dim)" }}>$ day </span><span style={{ color: "var(--green)" }}>{day}</span>
+          <span style={{ color: "var(--dim)" }}>/100 · tracking </span><span style={{ color: "var(--green)" }}>{projectCount}</span>
+          <span style={{ color: "var(--dim)" }}> projects · </span><span style={{ color: "var(--green)" }}>{launchedCount}</span>
+          <span style={{ color: "var(--dim)" }}> launched · </span><span style={{ color: "var(--green)" }}>{publicCount}</span>
+          <span style={{ color: "var(--dim)" }}> public · </span><span style={{ color: "var(--green)" }}>{toGo}</span>
+          <span style={{ color: "var(--dim)" }}> to go</span>
         </div>
       )}
     </div>
@@ -65,14 +65,6 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
 }
 
 const S = {
-  navBtn: {
-    background: "none", border: "1px solid var(--border)", borderRadius: 3,
-    color: "var(--dim)", fontSize: 10, padding: "3px 10px", fontFamily: "inherit",
-    cursor: "pointer", transition: "all 0.15s",
-  },
-  authBtn: {
-    background: "none", border: "none", fontFamily: "inherit",
-    color: "var(--dim)", fontSize: 10, padding: "3px 6px",
-    cursor: "pointer", transition: "color 0.15s",
-  },
+  navBtn: { background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontSize: 10, padding: "3px 10px", fontFamily: "inherit", cursor: "pointer" },
+  authBtn: { background: "none", border: "none", fontFamily: "inherit", color: "var(--dim)", fontSize: 10, padding: "3px 6px", cursor: "pointer" },
 };

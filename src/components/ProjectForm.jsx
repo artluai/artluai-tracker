@@ -1,20 +1,30 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const STATUS_LIST = ["idea", "building", "launched", "abandoned"];
 const VIS_LIST = ["private", "public", "gated"];
 
-export default function ProjectForm({ project, onSave, onCancel }) {
+export default function ProjectForm({ project, onSave, onCancel, onBackdropClose }) {
   const [form, setForm] = useState({ ...project });
   const [stackInput, setStackInput] = useState((project.stack || []).join(", "));
   const [shotInput, setShotInput] = useState("");
   const [showFF, setShowFF] = useState(false);
   const [ff, setFf] = useState({ name: "", type: "paste", content: "", url: "", visibility: "private" });
+  const formRef = useRef(form);
+  formRef.current = form;
 
   const set = (key, val) => setForm(f => ({ ...f, [key]: val }));
 
   const handleSave = () => {
     if (!form.name.trim()) return;
     onSave({ ...form, stack: stackInput.split(",").map(s => s.trim()).filter(Boolean) });
+  };
+
+  const handleBackdrop = () => {
+    if (onBackdropClose) {
+      onBackdropClose({ ...formRef.current, stack: stackInput.split(",").map(s => s.trim()).filter(Boolean) });
+    } else {
+      onCancel();
+    }
   };
 
   const addShot = () => { if (!shotInput.trim()) return; set("screenshots", [...(form.screenshots || []), shotInput.trim()]); setShotInput(""); };
@@ -26,7 +36,7 @@ export default function ProjectForm({ project, onSave, onCancel }) {
   const isNew = !project.id;
 
   return (
-    <div style={S.overlay} onClick={onCancel}>
+    <div style={S.overlay} onClick={handleBackdrop}>
       <div style={S.modal} onClick={e => e.stopPropagation()}>
         <div style={S.modalTitle}>{isNew ? "$ add project" : "$ edit project"}</div>
         <div style={S.scroll}>
@@ -41,7 +51,6 @@ export default function ProjectForm({ project, onSave, onCancel }) {
           <Field label="live link"><input value={form.link || ""} onChange={e => set("link", e.target.value)} placeholder="https://mysite.com" /></Field>
           <Field label="github repo"><input value={form.repo || ""} onChange={e => set("repo", e.target.value)} placeholder="https://github.com/artluai/project" /></Field>
           <Field label="media" hint="youtube, loom, or screen studio url"><input value={form.media || ""} onChange={e => set("media", e.target.value)} placeholder="https://screen.studio/share/..." /></Field>
-
           <Field label="visibility">
             <div style={S.visRow}>
               {["private", "public"].map(v => (
@@ -51,7 +60,6 @@ export default function ProjectForm({ project, onSave, onCancel }) {
               ))}
             </div>
           </Field>
-
           <Field label="screenshots" hint="paste image urls">
             <div style={S.inlineAdd}>
               <input value={shotInput} onChange={e => setShotInput(e.target.value)} placeholder="https://i.imgur.com/example.png" style={{ flex: 1 }} />
@@ -64,7 +72,6 @@ export default function ProjectForm({ project, onSave, onCancel }) {
               </div>
             ))}
           </Field>
-
           <Field label="files" hint="each with its own visibility">
             {(form.files || []).map((f, i) => (
               <div key={i} style={S.fileItem}>
@@ -121,14 +128,14 @@ function Field({ label, hint, children }) {
 
 const S = {
   overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.78)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 },
-  modal: { background: "#0e0f12", border: "1px solid var(--border)", borderRadius: 6, padding: "20px 22px", width: "100%", maxWidth: 480, maxHeight: "90vh", display: "flex", flexDirection: "column" },
+  modal: { background: "#0e0f12", border: "1px solid var(--border)", borderRadius: 6, padding: "20px 22px", width: "100%", maxWidth: 520, maxHeight: "90vh", display: "flex", flexDirection: "column" },
   modalTitle: { fontSize: 13, color: "var(--green)", fontWeight: 500, marginBottom: 16, flexShrink: 0 },
   scroll: { flex: 1, overflowY: "auto", paddingRight: 4 },
   row: { display: "flex", gap: 12 },
   label: { display: "block", fontSize: 10, color: "var(--dim)", letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 4 },
   hint: { textTransform: "none", letterSpacing: 0, color: "var(--dimmer)" },
   visRow: { display: "flex", gap: 8 },
-  visBtn: { flex: 1, background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontFamily: "inherit", fontSize: 11, padding: "5px 12px", cursor: "pointer", transition: "all 0.15s" },
+  visBtn: { flex: 1, background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontFamily: "inherit", fontSize: 11, padding: "5px 12px", cursor: "pointer" },
   visPriv: { borderColor: "var(--border-hover)", color: "var(--text)", background: "#111215" },
   visPub: { borderColor: "var(--green-border)", color: "var(--green)", background: "var(--green-bg)" },
   inlineAdd: { display: "flex", gap: 6, marginBottom: 6 },

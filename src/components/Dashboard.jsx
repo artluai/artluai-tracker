@@ -5,6 +5,14 @@ import Header from "./Header";
 import ProjectTable from "./ProjectTable";
 import ProjectForm from "./ProjectForm";
 
+function sortByDate(arr) {
+  return [...arr].sort((a, b) => {
+    const da = new Date(a.date || a.createdAt?.toDate?.() || "2000-01-01");
+    const db = new Date(b.date || b.createdAt?.toDate?.() || "2000-01-01");
+    return db - da;
+  });
+}
+
 export default function Dashboard() {
   const { user, login, isAdmin, loading } = useAuth();
   const [projects, setProjects] = useState([]);
@@ -12,17 +20,12 @@ export default function Dashboard() {
   const [formProject, setFormProject] = useState(null);
   const [delId, setDelId] = useState(null);
   const [error, setError] = useState(null);
+  const [draft, setDraft] = useState(null);
 
   const load = async () => {
-    try {
-      setLoadingData(true);
-      const data = await getAllProjects();
-      setProjects(data);
-    } catch (err) {
-      setError("failed to load projects: " + err.message);
-    } finally {
-      setLoadingData(false);
-    }
+    try { setLoadingData(true); const data = await getAllProjects(); setProjects(data); }
+    catch (err) { setError("failed to load: " + err.message); }
+    finally { setLoadingData(false); }
   };
 
   useEffect(() => { if (isAdmin) load(); }, [isAdmin]);
@@ -32,8 +35,21 @@ export default function Dashboard() {
       if (data.id) { const { id, ...rest } = data; await updateProject(id, rest); }
       else { await addProject(data); }
       setFormProject(null);
+      setDraft(null);
       await load();
     } catch (err) { setError("save failed: " + err.message); }
+  };
+
+  const handleCancel = () => { setFormProject(null); setDraft(null); };
+
+  const handleBackdropClose = (data) => {
+    if (data.name?.trim()) setDraft(data);
+    setFormProject(null);
+  };
+
+  const openAdd = () => {
+    if (draft && draft.name) setFormProject(draft);
+    else setFormProject(newProject());
   };
 
   const handleDelete = async () => {
@@ -46,6 +62,7 @@ export default function Dashboard() {
     catch (err) { setError("update failed: " + err.message); }
   };
 
+  const sorted = sortByDate(projects);
   const launched = projects.filter(p => p.status === "launched").length;
   const pubCount = projects.filter(p => p.visibility === "public").length;
 
@@ -78,11 +95,14 @@ export default function Dashboard() {
         </div>
       )}
       <div style={S.toolbar}>
-        <div style={{ fontSize: 11, color: "var(--green)" }}>dashboard</div>
-        <button style={S.addBtn} onClick={() => setFormProject(newProject())}>+ add</button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 11, color: "var(--green)" }}>dashboard</span>
+          {draft && <span style={{ fontSize: 9, color: "var(--yellow)" }}>draft saved</span>}
+        </div>
+        <button style={S.addBtn} onClick={openAdd}>+ add</button>
       </div>
       {loadingData ? <Loading /> : (
-        <ProjectTable projects={projects} isAdmin={true} onEdit={(p) => setFormProject(p)} onDelete={(id) => setDelId(id)} onToggleVis={handleToggleVis} />
+        <ProjectTable projects={sorted} isAdmin={true} onEdit={(p) => setFormProject(p)} onDelete={(id) => setDelId(id)} onToggleVis={handleToggleVis} />
       )}
       <div style={S.footer}>click ● / ○ to toggle visibility · click a row to expand details</div>
 
@@ -98,7 +118,7 @@ export default function Dashboard() {
           </div>
         </div>
       )}
-      {formProject && <ProjectForm project={formProject} onSave={handleSave} onCancel={() => setFormProject(null)} />}
+      {formProject && <ProjectForm project={formProject} onSave={handleSave} onCancel={handleCancel} onBackdropClose={handleBackdropClose} />}
     </Shell>
   );
 }
@@ -107,9 +127,9 @@ function Shell({ children }) { return <div style={S.wrap}>{children}</div>; }
 function Loading() { return <div style={{ padding: "40px 0", textAlign: "center", color: "var(--dim)", fontSize: 11 }}>loading...</div>; }
 
 const S = {
-  wrap: { maxWidth: 740, margin: "0 auto", padding: "20px 12px", minHeight: "100vh", boxSizing: "border-box" },
+  wrap: { maxWidth: 1200, margin: "0 auto", padding: "20px 24px", minHeight: "100vh", boxSizing: "border-box" },
   toolbar: { display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)", padding: "7px 0", marginBottom: 10 },
-  addBtn: { background: "var(--green-bg)", border: "1px solid var(--green-border)", color: "var(--green)", fontFamily: "inherit", fontSize: 11, padding: "4px 12px", borderRadius: 3, cursor: "pointer", letterSpacing: 0.3 },
+  addBtn: { background: "var(--green-bg)", border: "1px solid var(--green-border)", color: "var(--green)", fontFamily: "inherit", fontSize: 11, padding: "4px 12px", borderRadius: 3, cursor: "pointer" },
   footer: { fontSize: 10, padding: "10px 0", marginTop: 4, borderTop: "1px solid #131518", color: "var(--dimmer)" },
   error: { background: "var(--red-bg)", border: "1px solid var(--red-border)", borderRadius: 4, padding: "8px 12px", marginBottom: 10, fontSize: 11, color: "var(--red)", display: "flex", justifyContent: "space-between", alignItems: "center" },
   loginBtn: { background: "var(--green-bg)", border: "1px solid var(--green-border)", color: "var(--green)", fontFamily: "inherit", fontSize: 12, padding: "8px 20px", borderRadius: 4, cursor: "pointer" },

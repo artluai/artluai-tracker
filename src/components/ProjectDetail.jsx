@@ -14,24 +14,20 @@ export default function ProjectDetail({ project, isAdmin }) {
 
   return (
     <div style={S.wrap}>
-      {p.longDesc?.trim() && <Sec label="description"><div style={{ fontSize: 12, color: "var(--text)", lineHeight: 1.7, whiteSpace: "pre-wrap", maxWidth: 600 }}>{p.longDesc}</div></Sec>}
-
+      {p.longDesc?.trim() && <Sec label="description"><div style={{ fontSize: 12, color: "#8a8f9a", lineHeight: 1.7, whiteSpace: "pre-wrap", maxWidth: 700 }}>{p.longDesc}</div></Sec>}
       {p.media?.trim() && <Sec label="media">
         {isEmbed(p.media) ? (
-          <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, maxWidth: 500, borderRadius: 4, overflow: "hidden", border: "1px solid var(--border)" }}>
+          <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, maxWidth: 560, borderRadius: 4, overflow: "hidden", border: "1px solid var(--border)" }}>
             <iframe src={toEmbed(p.media)} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen title="Project video" />
           </div>
         ) : <a href={p.media} target="_blank" rel="noreferrer" style={{ fontSize: 11 }}>▶ {p.media}</a>}
       </Sec>}
-
       {shots.length > 0 && <Sec label="screenshots">
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {shots.map((url, i) => <a key={i} href={url} target="_blank" rel="noreferrer"><img src={url} alt="" style={{ height: 120, borderRadius: 4, border: "1px solid var(--border)", objectFit: "cover" }} /></a>)}
         </div>
       </Sec>}
-
       {p.repo?.trim() && <Sec label="repository"><a href={p.repo} target="_blank" rel="noreferrer" style={{ fontSize: 11 }}>{p.repo} ↗</a></Sec>}
-
       {files.length > 0 && <Sec label="files">
         {files.map((f, i) => (
           <div key={i} style={S.fileRow}>
