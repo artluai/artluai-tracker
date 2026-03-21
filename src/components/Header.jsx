@@ -14,6 +14,7 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
   const navigate = useNavigate();
   const location = useLocation();
   const isAdminPage = location.pathname === "/admin";
+  const isJournalPage = location.pathname.startsWith("/journal");
   const day = dayNum();
   const toGo = Math.max(0, 100 - projectCount);
 
@@ -25,8 +26,11 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
           <span className="cursor" />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button onClick={() => navigate("/journal")} style={isJournalPage ? S.navBtnActive : S.navBtn}>journal</button>
           {isAdminPage ? (
             <button onClick={() => navigate("/")} style={S.navBtn}>public view</button>
+          ) : isJournalPage ? (
+            <button onClick={() => navigate("/")} style={S.navBtn}>projects</button>
           ) : (
             isAdmin && <button onClick={() => navigate("/admin")} style={S.navBtn}>dashboard</button>
           )}
@@ -66,5 +70,6 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
 
 const S = {
   navBtn: { background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontSize: 10, padding: "3px 10px", fontFamily: "inherit", cursor: "pointer" },
+  navBtnActive: { background: "none", border: "1px solid var(--green-border)", borderRadius: 3, color: "var(--green)", fontSize: 10, padding: "3px 10px", fontFamily: "inherit", cursor: "pointer" },
   authBtn: { background: "none", border: "none", fontFamily: "inherit", color: "var(--dim)", fontSize: 10, padding: "3px 6px", cursor: "pointer" },
 };
