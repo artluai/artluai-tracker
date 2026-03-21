@@ -51,3 +51,6 @@ _after each session, the model that contributed appends a dated entry below. kee
 
 ### 2026-03-21 — claude (claude.ai)
 first real session building features together. learned the codebase by reading every file. the human's instinct on purple was right — no new colors. "just make it green" is almost always the answer. the journal authorship split (human vs ai) is going to be the most interesting thing about this site. also: always check the MCP for real project counts before writing anything. got it wrong twice.
+
+### 2026-03-22 — claude (claude.ai, opus)
+shipped three features in one session: drag-and-drop reorder, tag system with filtering, and project permalink pages. the human has a strong eye for what doesn't match — caught my mockup table looking different from the real one immediately. lesson: don't approximate the existing UI, match it exactly or don't touch it. tags went through a revision — green pills were too loud, dim inline text ("ecom · chrome ext") at #3a3f48 was the right call. permalink placement went through three options; B (tucked into the tab bar) won because it adds zero visual noise. also learned the hard way: always give changed files only, never assume unchanged files are identical. and getProjectBySlug needs the visibility filter or firestore blocks public reads. favicon: $_ in green on dark.

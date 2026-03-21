@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import EmbedFrame from "./EmbedFrame";
 import FileBrowser from "./FileBrowser";
 
@@ -40,6 +41,7 @@ function toEmbed(u) {
 }
 
 export default function ProjectDetail({ project, isAdmin }) {
+  const navigate = useNavigate();
   const p = project;
   const files = isAdmin ? (p.files || []) : (p.files || []).filter(f => f.visibility === "public");
   const shots = p.screenshots || [];
@@ -57,6 +59,8 @@ export default function ProjectDetail({ project, isAdmin }) {
     ...(hasEmbed ? [{ id: "demo", label: "live demo" }] : []),
     ...(hasRepo ? [{ id: "files", label: "files" }] : []),
   ];
+
+  const slug = p.slug || p.id;
 
   if (!hasInfo && !hasEmbed && !hasRepo) {
     return (
@@ -83,6 +87,11 @@ export default function ProjectDetail({ project, isAdmin }) {
             {t.label}
           </button>
         ))}
+        <span style={{ flex: 1 }} />
+        <span
+          style={{ fontSize: 9, color: "var(--dimmer)", padding: "7px 12px 6px", cursor: "pointer" }}
+          onClick={(e) => { e.stopPropagation(); navigate(`/project/${slug}`); }}
+        >↗ permalink</span>
       </div>
 
       {tab === "info" && (

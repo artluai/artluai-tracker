@@ -6,6 +6,11 @@
 - Don't spend lots of tokens without checking in
 - Ask before building, not after
 - Read personality.md before writing any journal content
+- Always give the full src folder as a zip when multiple files change — not individual files
+- Test locally with npm run dev before pushing
+- Never embed artlu.ai in itself
+- Screen Studio links open in new tab, not iframe
+- Deploy via GitHub Desktop → Netlify auto-deploys
 
 ## Design System
 - Font: IBM Plex Mono
@@ -24,26 +29,36 @@
 - Two font sizes only: 12px titles, 11px everything else
 - Header says "artlu.ai" not "artluai"
 - No new accent colors — everything interactive is green. No purple, no extra palette. If it's clickable, it's green.
+- Favicon: $_ terminal prompt (green on dark), SVG in public/favicon.svg
 
 ## Table (Desktop)
 - Columns: project, status, stack, date, links, vis, ops
+- Admin view adds ⠿ grip column as first column for drag reorder
 - Vertically centered cells
 - Arrow ▶ aligns with the title (flex-start)
 - Descriptions wrap naturally, never clip or truncate
+- Tags shown as dim inline text under description (same color as stack, #3a3f48), joined by " · "
 - Combined links column: site ↗ · gh ↗ · ▶ demo
-- Sorted newest first (date descending)
+- Sorted newest first (date descending, then sortOrder ascending within same date)
 - No × delete button in rows — delete is inside the edit form
+- Project name turns green on hover with ↗ — clicking name navigates to project permalink page
+- Clicking anywhere else on row expands/collapses detail as before
 
 ## Cards (Mobile < 640px)
 - Switch from table to card layout
 - Same two font sizes
 - Description and stack separated by dimmer color (#3a3f48 for stack)
+- Tags shown as dim text under description, same as desktop
 - Date and links share one bottom line
 
 ## Public View
 - Tagline: "100 projects. 100 days."
 - Counter: "day X/100 · X shipped · X to go"
 - Bio: "one person. no coding experience. just AI and an internet connection."
+- Tag filter bar above table: "filter: all | ecom | trading | chrome ext | dev tool | artlu"
+- Filter buttons match journal filter style (green active, dim inactive)
+- Shows project count: "X projects"
+- Filter bar only shows when projects have tags
 - No footer
 
 ## Dashboard View
@@ -51,6 +66,35 @@
 - Draft auto-save when clicking outside the form
 - Delete inside edit form under collapsible "danger zone" dropdown
 - Must type project name to confirm deletion
+- Footer: "drag ⠿ to reorder · click ● / ○ to toggle visibility · click a row to expand details"
+
+## Drag and Drop Reorder
+- Admin only — grip handle ⠿ appears as first column in admin table
+- Native HTML5 drag — no external library needed
+- Green border indicator shows drop position
+- Saves sortOrder field to Firestore via batch update
+- Public view respects saved order (date DESC, sortOrder ASC)
+- sortOrder is global (not per-date) — date sorts first, then sortOrder breaks ties
+
+## Tags
+- Field: tags[] on each project (string array)
+- Edited via comma-separated input in project form (same UX as stack field)
+- Current tags: ecom, trading, chrome ext, dev tool, artlu
+- Displayed as dim inline text under description: "ecom · chrome ext"
+- Same color as stack text (#3a3f48) — minimal, blends in
+- Filter bar on public view lets visitors filter by tag
+- Add/edit/remove tags anytime via project edit form or MCP
+
+## Project Permalinks
+- Route: /project/:slug
+- Slug auto-generated from project name on save (lowercase, hyphens, max 80 chars)
+- Slug stored in Firestore as "slug" field on each project doc
+- Query filters by visibility == "public" for security
+- Page shows: name, status, day number, date, tags, link pills, then info/demo/files tabs
+- Same tab system as expanded detail row
+- "← all projects" back button returns to homepage
+- Permalink link in expanded detail: small "↗ permalink" text right-aligned in tab bar (option B style)
+- Requires SPA redirect in netlify.toml: /project/* → /index.html (status 200)
 
 ## Visibility
 - Three levels: public, private, gated
@@ -73,7 +117,8 @@
 - Info tab: always shown — description, media, screenshots, repo link, files
 - Live demo tab: shown only when link is an auto-detected embeddable URL
 - Files tab: shown only when repo field is set — reads public GitHub repo via GitHub Contents API
-- Journal tab: shown only when the project has linked journal entries (journalRefs). Shows full entry body inline, not collapsed.
+- Permalink: small "↗ permalink" right-aligned in tab bar, navigates to /project/:slug
+- Journal tab: shown only when the project has linked journal entries (journalRefs). Shows full entry body inline, not collapsed. (future)
 
 ## Journal
 - Route: /journal (list view) and /journal/:slug (single entry permalink)
@@ -109,15 +154,37 @@
 - MCP server connects Claude to Firestore
 - Day 1 start date: 2026-03-18
 - SPA redirect required in netlify.toml: /* → /index.html (status 200)
+- Additional redirect: /project/* → /index.html (status 200) for project permalinks
 - Inline styles with const S = {} at bottom of each component — do not introduce CSS modules or styled-components
 - Always check MCP for real project counts before writing any content — don't assume
 
+## Firestore Project Schema
+```json
+{
+  "name": "string",
+  "desc": "string (one-liner)",
+  "longDesc": "string (full write-up)",
+  "status": "idea | building | launched | abandoned",
+  "date": "YYYY-MM-DD",
+  "stack": ["string"],
+  "tags": ["string"],
+  "slug": "string (auto-generated from name)",
+  "sortOrder": "number (for drag reorder)",
+  "link": "string (URL)",
+  "repo": "string (GitHub URL)",
+  "media": "string (video URL)",
+  "embedHeight": "number (default 600)",
+  "screenshots": ["string (URLs)"],
+  "files": [{"name", "type", "content", "url", "visibility"}],
+  "visibility": "public | private | gated",
+  "createdAt": "serverTimestamp",
+  "updatedAt": "serverTimestamp"
+}
+```
+
 ## Pending / Future
-- Drag-and-drop reordering (same-day projects)
-- Tag system with filtering (tags[] on projects, filter bar, URL sync)
-- Project permalinks (/project/:slug with og:meta for social sharing)
 - Journal tab in project detail (reverse lookup from journalRefs)
-- Favicon (>_ terminal prompt, green on dark)
+- og:meta tags on project permalink pages for social sharing
 - Batch import
 - Stripe/Gumroad paywall on gated content
 - AI video pipeline: journal entries → scripts → screenshots → video → YouTube

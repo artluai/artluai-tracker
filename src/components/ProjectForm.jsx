@@ -6,6 +6,7 @@ const VIS_LIST = ["private", "public", "gated"];
 export default function ProjectForm({ project, onSave, onCancel, onBackdropClose, onDelete }) {
   const [form, setForm] = useState({ ...project });
   const [stackInput, setStackInput] = useState((project.stack || []).join(", "));
+  const [tagsInput, setTagsInput] = useState((project.tags || []).join(", "));
   const [shotInput, setShotInput] = useState("");
   const [showFF, setShowFF] = useState(false);
   const [ff, setFf] = useState({ name: "", type: "paste", content: "", url: "", visibility: "private" });
@@ -18,12 +19,20 @@ export default function ProjectForm({ project, onSave, onCancel, onBackdropClose
 
   const handleSave = () => {
     if (!form.name.trim()) return;
-    onSave({ ...form, stack: stackInput.split(",").map(s => s.trim()).filter(Boolean) });
+    onSave({
+      ...form,
+      stack: stackInput.split(",").map(s => s.trim()).filter(Boolean),
+      tags: tagsInput.split(",").map(s => s.trim()).filter(Boolean),
+    });
   };
 
   const handleBackdrop = () => {
     if (onBackdropClose) {
-      onBackdropClose({ ...formRef.current, stack: stackInput.split(",").map(s => s.trim()).filter(Boolean) });
+      onBackdropClose({
+        ...formRef.current,
+        stack: stackInput.split(",").map(s => s.trim()).filter(Boolean),
+        tags: tagsInput.split(",").map(s => s.trim()).filter(Boolean),
+      });
     } else {
       onCancel();
     }
@@ -50,6 +59,7 @@ export default function ProjectForm({ project, onSave, onCancel, onBackdropClose
             <Field label="date"><input type="date" value={form.date} onChange={e => set("date", e.target.value)} /></Field>
           </div>
           <Field label="stack" hint="comma separated"><input value={stackInput} onChange={e => setStackInput(e.target.value)} placeholder="firebase, netlify, claude" /></Field>
+          <Field label="tags" hint="comma separated"><input value={tagsInput} onChange={e => setTagsInput(e.target.value)} placeholder="ecom, trading, chrome ext" /></Field>
           <Field label="live link" hint="netlify/vercel URLs auto-enable the live demo tab"><input value={form.link || ""} onChange={e => set("link", e.target.value)} placeholder="https://mysite.com" /></Field>
           <Field label="embed height" hint="iframe height in pixels — only applies if live demo tab is shown">
             <input

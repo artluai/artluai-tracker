@@ -6,3 +6,8 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/project/*"
+  to = "/index.html"
+  status = 200

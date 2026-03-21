@@ -1,6 +1,6 @@
 import {
   collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc,
-  query, where, orderBy, serverTimestamp
+  query, where, orderBy, serverTimestamp, writeBatch
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -31,9 +31,18 @@ export async function getProject(id) {
   return { id: snap.id, ...snap.data() };
 }
 
+export async function getProjectBySlug(slug) {
+  const q = query(collection(db, PROJECTS), where("slug", "==", slug), where("visibility", "==", "public"));
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+  const d = snap.docs[0];
+  return { id: d.id, ...d.data() };
+}
+
 export async function addProject(data) {
   const docRef = await addDoc(collection(db, PROJECTS), {
     ...data,
+    slug: makeProjectSlug(data.name),
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
@@ -41,14 +50,26 @@ export async function addProject(data) {
 }
 
 export async function updateProject(id, data) {
-  await updateDoc(doc(db, PROJECTS, id), {
+  const updates = {
     ...data,
     updatedAt: serverTimestamp(),
-  });
+  };
+  if (data.name) {
+    updates.slug = makeProjectSlug(data.name);
+  }
+  await updateDoc(doc(db, PROJECTS, id), updates);
 }
 
 export async function deleteProject(id) {
   await deleteDoc(doc(db, PROJECTS, id));
+}
+
+export async function batchUpdateSortOrder(updates) {
+  const batch = writeBatch(db);
+  for (const { id, sortOrder } of updates) {
+    batch.update(doc(db, PROJECTS, id), { sortOrder, updatedAt: serverTimestamp() });
+  }
+  await batch.commit();
 }
 
 // ---------- HELPERS ----------
@@ -61,6 +82,7 @@ export function newProject() {
     status: "idea",
     date: new Date().toISOString().slice(0, 10),
     stack: [],
+    tags: [],
     link: "",
     repo: "",
     media: "",
@@ -68,7 +90,16 @@ export function newProject() {
     screenshots: [],
     files: [],
     visibility: "private",
+    sortOrder: 0,
   };
+}
+
+function makeProjectSlug(name) {
+  return (name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 80);
 }
 
 // File object shape:

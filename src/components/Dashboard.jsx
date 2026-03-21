@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../lib/auth";
-import { getAllProjects, addProject, updateProject, deleteProject, newProject } from "../lib/db";
+import { getAllProjects, addProject, updateProject, deleteProject, newProject, batchUpdateSortOrder } from "../lib/db";
 import Header from "./Header";
 import ProjectTable from "./ProjectTable";
 import ProjectForm from "./ProjectForm";
 
-function sortByDate(arr) {
+function sortProjects(arr) {
   return [...arr].sort((a, b) => {
     const da = new Date(a.date || a.createdAt?.toDate?.() || "2000-01-01");
     const db = new Date(b.date || b.createdAt?.toDate?.() || "2000-01-01");
-    return db - da;
+    if (db - da !== 0) return db - da;
+    return (a.sortOrder || 0) - (b.sortOrder || 0);
   });
 }
 
@@ -61,7 +62,19 @@ export default function Dashboard() {
     catch (err) { setError("update failed: " + err.message); }
   };
 
-  const sorted = sortByDate(projects);
+  const handleReorder = async (reorderedProjects) => {
+    const updates = reorderedProjects.map((p, i) => ({ id: p.id, sortOrder: i }));
+    setProjects(reorderedProjects);
+    try {
+      await batchUpdateSortOrder(updates);
+      await load();
+    } catch (err) {
+      setError("reorder failed: " + err.message);
+      await load();
+    }
+  };
+
+  const sorted = sortProjects(projects);
   const launched = projects.filter(p => p.status === "launched").length;
   const pubCount = projects.filter(p => p.visibility === "public").length;
 
@@ -101,9 +114,9 @@ export default function Dashboard() {
         <button style={S.addBtn} onClick={openAdd}>+ add</button>
       </div>
       {loadingData ? <Loading /> : (
-        <ProjectTable projects={sorted} isAdmin={true} onEdit={(p) => setFormProject(p)} onToggleVis={handleToggleVis} />
+        <ProjectTable projects={sorted} isAdmin={true} onEdit={(p) => setFormProject(p)} onToggleVis={handleToggleVis} onReorder={handleReorder} />
       )}
-      <div style={S.footer}>click ● / ○ to toggle visibility · click a row to expand details</div>
+      <div style={S.footer}>drag ⠿ to reorder · click ● / ○ to toggle visibility · click a row to expand details</div>
 
       {formProject && <ProjectForm project={formProject} onSave={handleSave} onCancel={handleCancel} onBackdropClose={handleBackdropClose} onDelete={handleDelete} />}
     </Shell>
