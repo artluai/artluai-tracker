@@ -1,5 +1,5 @@
-export default function EmbedFrame({ url, height = 600 }) {
-  if (!url?.trim()) return null;
+export default function EmbedFrame({ url, html, height = 600 }) {
+  if (!html && !url?.trim()) return null;
 
   return (
     <div style={S.wrap}>
@@ -9,18 +9,29 @@ export default function EmbedFrame({ url, height = 600 }) {
           <span style={{ ...S.dot, background: "#f59e0b" }} />
           <span style={{ ...S.dot, background: "#4ade80" }} />
         </div>
-        <div style={S.url}>{url}</div>
-        <a href={url} target="_blank" rel="noreferrer" style={S.openBtn} onClick={e => e.stopPropagation()}>
-          ↗ open
-        </a>
+        <div style={S.url}>{html ? "embedded artifact" : url}</div>
+        {!html && (
+          <a href={url} target="_blank" rel="noreferrer" style={S.openBtn} onClick={e => e.stopPropagation()}>
+            ↗ open
+          </a>
+        )}
       </div>
-      <iframe
-        src={url}
-        sandbox="allow-scripts allow-same-origin allow-forms"
-        style={{ ...S.frame, height }}
-        title="Live project demo"
-        loading="lazy"
-      />
+      {html ? (
+        <iframe
+          srcDoc={html}
+          sandbox="allow-scripts"
+          style={{ ...S.frame, height }}
+          title="Embedded artifact"
+        />
+      ) : (
+        <iframe
+          src={url}
+          sandbox="allow-scripts allow-same-origin allow-forms"
+          style={{ ...S.frame, height }}
+          title="Live project demo"
+          loading="lazy"
+        />
+      )}
     </div>
   );
 }

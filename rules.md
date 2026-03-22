@@ -107,6 +107,7 @@
 - Not embeddable: github.com, youtube.com, loom.com, screen.studio, twitter.com, notion.so, google docs/drive
 - Embed height is configurable per project via the embedHeight field (default 600px)
 - Link only (no embed): Chrome extensions, full web apps with their own auth, anything that doesn't work in a small window
+- Artifact HTML embed: paste raw HTML into the artifactHtml field on a project. Renders via `<iframe srcdoc>`, no deployment needed. Sandbox is allow-scripts only (no allow-same-origin). Firestore docs cap at 1MB — typical artifacts are 5-50KB.
 
 ## Video Embeds
 - Supported: YouTube, Loom
@@ -115,7 +116,7 @@
 
 ## Project Detail Tabs
 - Info tab: always shown — description, media, screenshots, repo link, files
-- Live demo tab: shown only when link is an auto-detected embeddable URL
+- Live demo tab: shown when link is an auto-detected embeddable URL OR when artifactHtml is present. artifactHtml takes priority over link — renders via iframe srcdoc instead of src. Toolbar shows "embedded artifact" instead of a URL.
 - Files tab: shown only when repo field is set — reads public GitHub repo via GitHub Contents API
 - Permalink: small "↗ permalink" right-aligned in tab bar, navigates to /project/:slug
 - Journal tab: shown only when the project has linked journal entries (journalRefs). Shows full entry body inline, not collapsed. (future)
@@ -174,6 +175,7 @@
   "repo": "string (GitHub URL)",
   "media": "string (video URL)",
   "embedHeight": "number (default 600)",
+  "artifactHtml": "string (raw HTML for srcdoc embed, optional)",
   "screenshots": ["string (URLs)"],
   "files": [{"name", "type", "content", "url", "visibility"}],
   "visibility": "public | private | gated",

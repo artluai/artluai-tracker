@@ -84,7 +84,7 @@ export default function ProjectPage() {
   const shots = p.screenshots || [];
   const tags = (p.tags || []).filter(Boolean);
   const embedUrl = isEmbeddable(p.link) ? p.link : null;
-  const hasEmbed = !!embedUrl;
+  const hasEmbed = !!p.artifactHtml || !!embedUrl;
   const hasRepo = !!p.repo?.trim();
   const hasInfo = p.longDesc?.trim() || p.media?.trim() || shots.length || files.length;
   const day = dayNum(p.date);
@@ -215,7 +215,7 @@ function ProjectPageInner({ p, files, shots, tags, embedUrl, hasEmbed, hasRepo, 
 
       {tab === "demo" && (
         <div style={{ marginBottom: 16 }}>
-          <EmbedFrame url={embedUrl} height={p.embedHeight || 600} />
+          <EmbedFrame url={p.artifactHtml ? undefined : embedUrl} html={p.artifactHtml || undefined} height={p.embedHeight || 600} />
         </div>
       )}
 

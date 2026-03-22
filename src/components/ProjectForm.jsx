@@ -72,6 +72,12 @@ export default function ProjectForm({ project, onSave, onCancel, onBackdropClose
           </Field>
           <Field label="github repo"><input value={form.repo || ""} onChange={e => set("repo", e.target.value)} placeholder="https://github.com/artluai/project" /></Field>
           <Field label="media" hint="youtube, loom, or screen studio url"><input value={form.media || ""} onChange={e => set("media", e.target.value)} placeholder="https://screen.studio/share/..." /></Field>
+          <Field label="artifact html" hint="paste raw html from claude artifact — replaces deployed embed">
+            <textarea value={form.artifactHtml || ""} onChange={e => set("artifactHtml", e.target.value)} placeholder="<!DOCTYPE html>..." style={{ minHeight: 80 }} />
+            {form.artifactHtml && (
+              <button style={S.clearArtifactBtn} onClick={() => set("artifactHtml", "")}>clear</button>
+            )}
+          </Field>
           <Field label="visibility">
             <div style={S.visRow}>
               {["private", "public"].map(v => (
@@ -182,6 +188,7 @@ const S = {
   fileForm: { padding: "10px 12px", background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 4, display: "flex", flexDirection: "column", gap: 8 },
   smallBtn: { background: "var(--green-bg)", border: "1px solid var(--green-border)", color: "var(--green)", fontFamily: "inherit", fontSize: 10, padding: "4px 10px", borderRadius: 3, cursor: "pointer", flexShrink: 0 },
   removeBtn: { background: "none", border: "none", color: "var(--red)", fontSize: 14, cursor: "pointer", padding: "0 4px", flexShrink: 0 },
+  clearArtifactBtn: { background: "none", border: "1px solid #3d1818", borderRadius: 3, color: "#f87171", fontFamily: "inherit", fontSize: 10, padding: "3px 10px", cursor: "pointer", marginTop: 6 },
   btnRow: { display: "flex", justifyContent: "flex-end", gap: 8, marginTop: 16, flexShrink: 0 },
   cancelBtn: { background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontFamily: "inherit", fontSize: 11, padding: "6px 14px", cursor: "pointer" },
   saveBtn: { background: "var(--green-bg)", border: "1px solid var(--green-border)", borderRadius: 3, color: "var(--green)", fontFamily: "inherit", fontSize: 11, padding: "6px 16px", cursor: "pointer", fontWeight: 500 },
