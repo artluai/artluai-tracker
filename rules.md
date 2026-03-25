@@ -110,6 +110,24 @@
 - Embed height is configurable per project via the embedHeight field (default 600px)
 - Link only (no embed): Chrome extensions, full web apps with their own auth, anything that doesn't work in a small window
 
+## Artifact Embed (HTML demos without deploy)
+- Any project can have raw HTML embedded as its live demo instead of a deployed URL
+- Firestore field: `artifactHtml` — a complete HTML document (<!DOCTYPE html>...)
+- When `artifactHtml` is set, the "live demo" tab renders it via iframe srcdoc instead of the deployed URL
+- `artifactHtml` takes priority over `link` — if both exist, the artifact HTML is shown
+- Trigger phrase: **"embed this as the demo for [project]"** — any Claude session that hears this should run: `update_project("[project]", { artifactHtml: "[the HTML]" })`
+- To clear it and revert to the deployed URL: `update_project("[project]", { artifactHtml: "" })`
+- The HTML must be self-contained (inline CSS/JS, no external deps except CDN fonts)
+- Embed height is configurable via the `embedHeight` field (default 600px)
+- Use case: embed Claude artifacts, frozen snapshots, or any HTML demo without deploying anything
+- Future field: `snapshotHtml` — stores a previous version of `artifactHtml` as a backup (no UI yet, accessible via MCP)
+
+## Artifact Embed via MCP
+- To set: `update_project("project name", { artifactHtml: "<html>...</html>" })`
+- To clear: `update_project("project name", { artifactHtml: "" })`
+- To backup current before replacing: read `artifactHtml` first, store in `snapshotHtml`, then write new `artifactHtml`
+- To restore backup: `update_project("project name", { artifactHtml: "<the snapshotHtml value>" })`
+
 ## Video Embeds
 - Supported: YouTube, Loom
 - Auto-converts share URLs to embed URLs
@@ -117,7 +135,7 @@
 
 ## Project Detail Tabs
 - Info tab: always shown — description, media, screenshots, repo link, files
-- Live demo tab: shown only when link is an auto-detected embeddable URL
+- Live demo tab: shown when link is an auto-detected embeddable URL OR when artifactHtml is set
 - Files tab: shown only when repo field is set — reads public GitHub repo via GitHub Contents API
 - Permalink: small "↗ permalink" right-aligned in tab bar, navigates to /project/:slug
 - Journal tab: shown only when the project has linked journal entries (journalRefs). Shows full entry body inline, not collapsed. (future)
@@ -159,6 +177,7 @@
 - Additional redirect: /project/* → /index.html (status 200) for project permalinks
 - Inline styles with const S = {} at bottom of each component — do not introduce CSS modules or styled-components
 - Always check MCP for real project counts before writing any content — don't assume
+- **Known issue:** projects added via MCP don't get slugs auto-generated (slug generation is in the frontend's db.js). Always set the slug manually after adding: `update_project("project name", { slug: "project-name-slug" })`
 
 ## Firestore Project Schema
 ```json
@@ -179,6 +198,8 @@
   "screenshots": ["string (URLs)"],
   "files": [{"name", "type", "content", "url", "visibility"}],
   "visibility": "public | private | gated",
+  "artifactHtml": "string (raw HTML — replaces deployed embed in live demo tab)",
+  "snapshotHtml": "string (archived previous version of artifactHtml — no UI, MCP-only)",
   "createdAt": "serverTimestamp",
   "updatedAt": "serverTimestamp"
 }
@@ -190,3 +211,4 @@
 - Batch import
 - Stripe/Gumroad paywall on gated content
 - AI video pipeline: journal entries → scripts → screenshots → video → YouTube
+- snapshotHtml UI — "previous version" tab in project detail to view archived snapshots
