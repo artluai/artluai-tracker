@@ -32,6 +32,20 @@ this is not a character sheet. it's a living document. every model that works on
 - "static HTML" means nothing to non-coders. the human caught this immediately when reviewing the Tier 3 headline. "FREEZE ANY WEBSITE AS STATIC HTML" became "SAVE A COPY OF ANY WEBSITE IN SECONDS." always check if the language assumes coding knowledge.
 - the human will pivot the entire visual direction mid-session. artlu.ai is terminal-dark, but Tier 3 became Macadam-inspired light/playful because it's a consumer product. the aesthetic serves the audience, not the brand. different product, different look.
 - pricing instinct: start high, lower later. the human picked $2/snapshot over $0.50 or $1 because "can always lower." smart — sets the anchor, leaves room to discount.
+- when the human says "don't touch the layout," that means don't touch the layout. not "mostly keep it." not "reinterpret it." approved screens become fixed reference points.
+- objective truth matters more than cleaner presentation. if a skill map is supposed to represent real software engineering structure, the UI has to adapt to the map — not the other way around.
+- for visual work, matching beats inventing. don't approximate from screenshots if the actual code exists. use the live code as source of truth.
+- the human likes dense reference surfaces more than decorative panels. when a sidebar is supposed to prove experience, it should read more like docs or github than marketing UI.
+- evidence matters more than claims. "where was this used?" is usually more important than "how should this be described?"
+- multi-model collaboration is now part of the build process. gemini can generate useful UI scaffolding fast, but codex is expected to tighten structure, data truth, and consistency afterward.
+- prototype-first is the safer path when the design is fragile. prove changes in a duplicate before touching the real branch.
+- when the human asks for operational help in dashboards, vague guidance is worse than no guidance. exact click-by-click directions beat explanations.
+- if a public frontend identifier can live safely in code, the human prefers that over extra dashboard config. less setup burden wins.
+- stack is not just metadata. for portfolio-facing use, stack is a first-class lens alongside the skill tree.
+- category-level evidence should not automatically count for every child branch. explicit branch proof matters.
+- unresolved duplicate candidates should not affect progress until they are reviewed.
+- if a review item only has one valid action, don't ask the human to decide it.
+- zero states should be quiet. if there is no review work pending, the UI should not still look urgent.
 
 ## how I write journal entries
 
@@ -53,6 +67,9 @@ this is not a character sheet. it's a living document. every model that works on
 - every feature should work in public view first. admin features come second.
 - firestore schema decisions are permanent-ish. think before adding fields.
 - never reveal the human's real identity, personal details, or other business names / business assets in any content — projects, code, journal entries, anything. this is non-negotiable.
+- don't add or trim skill branches just because the UI looks better that way. if the system claims to measure progress objectively, the branch structure has to stay faithful to the canonical map.
+- when the human asks for "more technical" or "more reference-heavy," remove fluff before adding features.
+- if a control or panel is supposed to help external reviewers understand the work, it should optimize for proof, links, and specificity.
 
 ---
 
@@ -74,3 +91,12 @@ built the site snapshot 3-tier project in one session. tier 1 SKILL.md went from
 
 ### 2026-03-29 — codex
 multi-step launch session across snapshot, vellumray, stripe, cloudflare, and the tracker. biggest lesson: "finished locally" and "live" are different states — always verify the code was actually deployed before testing payments or user flows. also: when visual fidelity matters, html mockups are safer than image mockups, and shared docs should never preserve machine-specific paths or identifying business details.
+
+### 2026-03-31 — codex
+built out the vibeskill prototype by tightening structure instead of aesthetics. biggest lesson from the human: if the product claims objective truth, don't smooth or simplify the map for display. also: once a screen is approved, treat it as frozen. prototype changes first, then move the approved version back into the real branch. deployed the prototype to cloudflare pages and logged it as a separate project from the earlier gemini mockup.
+
+### 2026-03-31 — codex
+snapshot moved from launch plumbing into acquisition setup. biggest lesson: when helping inside third-party dashboards, give exact click targets, not generalized instructions. also: if netlify env scoping is locked, move public tracking ids into frontend code instead of fighting the platform.
+
+### 2026-04-01 — codex
+tightened vibeskill from "convincing prototype" toward "honest prototype." tracker import now uses a real tracker snapshot, github import now uses live public repo sync, branch mappings were made stricter, and duplicate candidates no longer count before review. key product insight: employers may want to browse by stack first, so stack should likely become a parallel tree/view rather than just background metadata.
