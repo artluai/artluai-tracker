@@ -16,7 +16,6 @@ export default function ProjectTable({ projects, isAdmin, onEdit, onDelete, onTo
   const toggle = (id) => setExpandedId(prev => prev === id ? null : id);
   const dragEnabled = isAdmin && !!onReorder;
 
-  // drag state
   const [dragIdx, setDragIdx] = useState(null);
   const [overIdx, setOverIdx] = useState(null);
   const dragRef = useRef(null);
@@ -85,10 +84,10 @@ export default function ProjectTable({ projects, isAdmin, onEdit, onDelete, onTo
           <tr>
             {dragEnabled && <th style={{ ...S.th, width: 28, padding: "8px 4px 8px 12px" }}></th>}
             <th style={S.th}>project</th>
-            <th style={S.th}>status</th>
-            <th style={S.th}>stack</th>
-            <th style={S.th}>date</th>
-            <th style={S.th}>links</th>
+            <th style={{ ...S.th, width: "1%", whiteSpace: "nowrap" }}>status</th>
+            <th style={{ ...S.th, width: "1%", whiteSpace: "nowrap", minWidth: 180 }}>stack</th>
+            <th style={{ ...S.th, width: "1%", whiteSpace: "nowrap" }}>date</th>
+            <th style={{ ...S.th, width: "1%", whiteSpace: "nowrap" }}>links</th>
             {isAdmin && <th style={{ ...S.th, textAlign: "center", width: 44 }}>vis</th>}
             {isAdmin && <th style={{ ...S.th, textAlign: "right", width: 56 }}>ops</th>}
           </tr>
