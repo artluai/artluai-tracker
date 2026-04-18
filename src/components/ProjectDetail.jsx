@@ -104,7 +104,7 @@ export default function ProjectDetail({ project, isAdmin }) {
             <>
               {p.longDesc?.trim() && (
                 <Sec label="description">
-                  <div style={{ fontSize: 12, color: "#8a8f9a", lineHeight: 1.7, whiteSpace: "pre-wrap", maxWidth: 700 }}>{p.longDesc}</div>
+                  <div style={{ fontSize: 12, color: "var(--text-sub)", lineHeight: 1.7, whiteSpace: "pre-wrap", maxWidth: 700 }}>{p.longDesc}</div>
                 </Sec>
               )}
               {p.media?.trim() && (
@@ -182,7 +182,7 @@ function Sec({ label, children }) {
 
 const S = {
   wrap: { background: "var(--surface)", borderBottom: "1px solid var(--border)" },
-  tabBar: { display: "flex", borderBottom: "1px solid var(--border)", padding: "0 14px", background: "#0a0b0d" },
+  tabBar: { display: "flex", borderBottom: "1px solid var(--border)", padding: "0 14px", background: "var(--bg)" },
   tab: {
     fontFamily: "inherit", fontSize: 10, letterSpacing: "0.05em", color: "var(--dim)",
     padding: "7px 12px 6px", background: "none", border: "none",

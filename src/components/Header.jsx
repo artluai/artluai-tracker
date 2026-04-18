@@ -1,4 +1,5 @@
 import { useAuth } from "../lib/auth";
+import { useTheme } from "../lib/theme";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const START_DATE = "2026-03-18";
@@ -11,6 +12,7 @@ function dayNum() {
 
 export default function Header({ projectCount, launchedCount, publicCount, isPublic }) {
   const { user, login, logout, isAdmin } = useAuth();
+  const { theme, toggle } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const isAdminPage = location.pathname === "/admin";
@@ -22,7 +24,7 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
     <div style={{ marginBottom: 14 }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-          <span style={{ fontSize: 17, fontWeight: 500, color: "var(--text-bright)", letterSpacing: -0.5 }}>artlu.ai</span>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: 17, fontWeight: 500, color: "var(--text-bright)", letterSpacing: -0.5 }}>artlu.ai</span>
           <span className="cursor" />
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -34,6 +36,14 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
           ) : (
             isAdmin && <button onClick={() => navigate("/admin")} style={S.navBtn}>dashboard</button>
           )}
+          <button
+            onClick={toggle}
+            style={S.themeBtn}
+            title={theme === "light" ? "switch to dark" : "switch to light"}
+            aria-label="toggle theme"
+          >
+            {theme === "light" ? "☾" : "☀"}
+          </button>
           {user ? (
             <button onClick={logout} style={S.authBtn}>logout</button>
           ) : (
@@ -42,20 +52,10 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
         </div>
       </div>
 
-      {isPublic ? (
-        <>
-          <div style={{ fontSize: 13, color: "var(--text-bright)", fontWeight: 500, letterSpacing: -0.3, marginTop: 12, marginBottom: 6 }}>
-            <span style={{ color: "var(--green)" }}>100</span> projects. <span style={{ color: "var(--green)" }}>100</span> days.
-          </div>
-          <div style={{ fontSize: 11, color: "var(--dim)", marginBottom: 10 }}>
-            day <span style={{ color: "var(--green)" }}>{day}</span>/100 · <span style={{ color: "var(--green)" }}>{projectCount}</span> shipped · <span style={{ color: "var(--green)" }}>{toGo}</span> to go
-          </div>
-          <div style={{ fontSize: 11, color: "var(--dim)", fontWeight: 300, letterSpacing: 0.2 }}>
-            one person. no coding experience. just AI and an internet connection.
-          </div>
-        </>
-      ) : (
-        <div style={{ fontSize: 11, marginTop: 5 }}>
+      {/* Public-view hero lives in PublicView now. Header still renders the
+          compact one-line counter on admin/journal pages. */}
+      {!isPublic && (
+        <div style={{ fontSize: 11, marginTop: 5, fontFamily: "var(--font-mono)" }}>
           <span style={{ color: "var(--dim)" }}>$ day </span><span style={{ color: "var(--green)" }}>{day}</span>
           <span style={{ color: "var(--dim)" }}>/100 · tracking </span><span style={{ color: "var(--green)" }}>{projectCount}</span>
           <span style={{ color: "var(--dim)" }}> projects · </span><span style={{ color: "var(--green)" }}>{launchedCount}</span>
@@ -69,7 +69,8 @@ export default function Header({ projectCount, launchedCount, publicCount, isPub
 }
 
 const S = {
-  navBtn: { background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontSize: 10, padding: "3px 10px", fontFamily: "inherit", cursor: "pointer" },
-  navBtnActive: { background: "none", border: "1px solid var(--green-border)", borderRadius: 3, color: "var(--green)", fontSize: 10, padding: "3px 10px", fontFamily: "inherit", cursor: "pointer" },
-  authBtn: { background: "none", border: "none", fontFamily: "inherit", color: "var(--dim)", fontSize: 10, padding: "3px 6px", cursor: "pointer" },
+  navBtn:       { fontFamily: "inherit", background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontSize: 10, padding: "3px 10px", cursor: "pointer" },
+  navBtnActive: { fontFamily: "inherit", background: "var(--green-bg)", border: "1px solid var(--green-border)", borderRadius: 3, color: "var(--green)", fontSize: 10, padding: "3px 10px", cursor: "pointer" },
+  themeBtn:     { fontFamily: "inherit", background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontSize: 12, padding: "1px 8px", cursor: "pointer", lineHeight: 1.2 },
+  authBtn:      { fontFamily: "inherit", background: "none", border: "none", color: "var(--dim)", fontSize: 10, padding: "3px 6px", cursor: "pointer" },
 };

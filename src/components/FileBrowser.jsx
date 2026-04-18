@@ -27,13 +27,34 @@ export default function FileBrowser({ repo }) {
 
   useEffect(() => {
     if (!repoSlug) { setError("no repo"); setLoading(false); return; }
-    fetch(`${GH_API}/${repoSlug}/git/trees/main?recursive=1`)
-      .then(r => {
-        if (!r.ok) throw new Error(`GitHub API error: ${r.status}`);
-        return r.json();
-      })
-      .then(data => { setTree(buildTree(data.tree || [])); setLoading(false); })
-      .catch(err => { setError(err.message); setLoading(false); });
+    let cancelled = false;
+    (async () => {
+      try {
+        // Step 1: fetch repo metadata to get the real default branch.
+        // Many repos use `master`, `develop`, etc. — don't assume `main`.
+        const metaRes = await fetch(`${GH_API}/${repoSlug}`);
+        if (!metaRes.ok) {
+          if (metaRes.status === 404) throw new Error("repo not found (private or moved?)");
+          if (metaRes.status === 403) throw new Error("github rate limit reached — try again later");
+          throw new Error(`github ${metaRes.status}`);
+        }
+        const meta = await metaRes.json();
+        const branch = meta.default_branch || "main";
+
+        // Step 2: fetch the git tree at that branch.
+        const treeRes = await fetch(`${GH_API}/${repoSlug}/git/trees/${branch}?recursive=1`);
+        if (!treeRes.ok) throw new Error(`tree ${treeRes.status}`);
+        const data = await treeRes.json();
+        if (cancelled) return;
+        setTree(buildTree(data.tree || []));
+        setLoading(false);
+      } catch (err) {
+        if (cancelled) return;
+        setError(err.message);
+        setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
   }, [repoSlug]);
 
   const loadFile = async (path) => {

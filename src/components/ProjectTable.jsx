@@ -148,7 +148,7 @@ function DesktopRow({ p, idx, isAdmin, expanded, onToggle, onEdit, onDelete, onT
             <span style={{ fontSize: 11, color: "var(--dimmer)", transition: "transform 0.15s", transform: expanded ? "rotate(90deg)" : "rotate(0deg)", display: "inline-block", flexShrink: 0, marginTop: 1 }}>▶</span>
             <div>
               <div>
-                {p.featured && <span style={S.topPill}>top</span>}
+                {p.top && <span style={S.topPill}>top</span>}
                 <span
                   style={{ color: nameHover ? "var(--green)" : "var(--text-bright)", fontWeight: 500, fontSize: 12, cursor: "pointer", transition: "color 0.15s" }}
                   onMouseEnter={() => setNameHover(true)}
@@ -159,14 +159,14 @@ function DesktopRow({ p, idx, isAdmin, expanded, onToggle, onEdit, onDelete, onT
                   {nameHover && <span style={{ fontSize: 10, color: "var(--green)", marginLeft: 4, opacity: 0.8 }}>↗</span>}
                 </span>
               </div>
-              {p.desc && <div style={{ color: "#8a8f9a", fontSize: 11, marginTop: 2, lineHeight: 1.5 }}>{p.desc}</div>}
-              {tags.length > 0 && <div style={{ fontSize: 10, color: "var(--dimmer)", marginTop: 3 }}>{tags.join(" · ")}</div>}
+              {p.desc && <div style={{ color: "var(--text-sub)", fontSize: 11, marginTop: 2, lineHeight: 1.5 }}>{p.desc}</div>}
+              {tags.length > 0 && <div style={{ fontSize: 10, color: "var(--dim)", marginTop: 3 }}>{tags.join(" · ")}</div>}
             </div>
           </div>
         </td>
         <td style={S.td}><span className={`status status-${p.status}`} style={{ whiteSpace: "nowrap" }}>{p.status}</span></td>
-        <td style={{ ...S.td, fontSize: 11, color: "var(--dimmer)", lineHeight: 1.5 }}>{(p.stack || []).join(", ") || "—"}</td>
-        <td style={{ ...S.td, fontSize: 11, color: "#8a8f9a", whiteSpace: "nowrap" }}>{fmtDate(p.date)}</td>
+        <td style={{ ...S.td, fontSize: 11, color: "var(--text-sub)", lineHeight: 1.5 }}>{(p.stack || []).join(", ") || "—"}</td>
+        <td style={{ ...S.td, fontSize: 11, color: "var(--text-sub)", whiteSpace: "nowrap" }}>{fmtDate(p.date)}</td>
         <td style={S.td}><Links p={p} /></td>
         {isAdmin && <td style={{ ...S.td, textAlign: "center" }}>
           <button onClick={e => { e.stopPropagation(); onToggleVis(); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 14, padding: "2px 6px", lineHeight: 1 }}>
@@ -198,15 +198,15 @@ function MobileCard({ p, isAdmin, expanded, onToggle, onEdit, onDelete, onToggle
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 6, flex: 1 }}>
             <span style={{ fontSize: 11, color: "var(--dimmer)", transition: "transform 0.15s", transform: expanded ? "rotate(90deg)" : "rotate(0deg)", display: "inline-block", flexShrink: 0, marginTop: 1 }}>▶</span>
-            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-bright)", cursor: "pointer" }} onClick={handleNameClick}>{p.featured && <span style={S.topPill}>top</span>}{p.name}</span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: "var(--text-bright)", cursor: "pointer" }} onClick={handleNameClick}>{p.top && <span style={S.topPill}>top</span>}{p.name}</span>
           </div>
           <span className={`status status-${p.status}`} style={{ flexShrink: 0, marginLeft: 8 }}>{p.status}</span>
         </div>
-        {p.desc && <div style={{ fontSize: 11, color: "#8a8f9a", lineHeight: 1.6, paddingLeft: 17 }}>{p.desc}</div>}
-        {tags.length > 0 && <div style={{ fontSize: 10, color: "var(--dimmer)", paddingLeft: 17, marginTop: 3 }}>{tags.join(" · ")}</div>}
-        <div style={{ fontSize: 11, color: "var(--dimmer)", paddingLeft: 17, marginTop: 10 }}>{(p.stack || []).join(", ") || "—"}</div>
+        {p.desc && <div style={{ fontSize: 11, color: "var(--text-sub)", lineHeight: 1.6, paddingLeft: 17 }}>{p.desc}</div>}
+        {tags.length > 0 && <div style={{ fontSize: 10, color: "var(--dim)", paddingLeft: 17, marginTop: 3 }}>{tags.join(" · ")}</div>}
+        <div style={{ fontSize: 11, color: "var(--text-sub)", paddingLeft: 17, marginTop: 10 }}>{(p.stack || []).join(", ") || "—"}</div>
         <div style={{ fontSize: 11, paddingLeft: 17, marginTop: 8, display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <span style={{ color: "#8a8f9a" }}>{fmtDate(p.date)}</span>
+          <span style={{ color: "var(--text-sub)" }}>{fmtDate(p.date)}</span>
           <Links p={p} />
           {isAdmin && (
             <>
@@ -231,8 +231,8 @@ function fmtDate(d) {
 }
 
 const S = {
-  th: { fontSize: 9, fontWeight: 400, color: "#444952", textAlign: "left", padding: "8px 12px", letterSpacing: 1.5, textTransform: "uppercase", borderBottom: "1px solid var(--border)" },
-  td: { padding: "11px 12px", borderBottom: "1px solid #131518", fontSize: 12, verticalAlign: "middle", transition: "background 0.1s" },
+  th: { fontSize: 9, fontWeight: 400, color: "var(--text-sub)", textAlign: "left", padding: "8px 12px", letterSpacing: 1.5, textTransform: "uppercase", borderBottom: "1px solid var(--border)" },
+  td: { padding: "11px 12px", borderBottom: "1px solid var(--divider)", fontSize: 12, verticalAlign: "middle", transition: "background 0.1s" },
   opBtn: { background: "none", border: "none", color: "var(--dim)", fontFamily: "inherit", fontSize: 10, cursor: "pointer", padding: "2px 5px", transition: "color 0.15s" },
   topPill: { fontSize: 9, color: "var(--green)", border: "1px solid var(--green-border)", background: "var(--green-bg)", padding: "1px 5px", borderRadius: 3, marginRight: 6, display: "inline-block", verticalAlign: "baseline", lineHeight: 1.3, position: "relative", top: -1 },
 };

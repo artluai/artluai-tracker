@@ -55,5 +55,5 @@ const S = {
     padding: "2px 8px", borderRadius: 2, letterSpacing: "0.04em",
     flexShrink: 0, opacity: 1, textDecoration: "none",
   },
-  frame: { width: "100%", border: "none", display: "block", background: "#0a0b0c" },
+  frame: { width: "100%", border: "none", display: "block", background: "var(--bg)" },
 };

@@ -82,10 +82,16 @@ export default function ProjectForm({ project, onSave, onCancel, onBackdropClose
               ))}
             </div>
           </Field>
-          <Field label="featured">
+          <Field label="top pick" hint="shows this project under the ★ top filter pill in the all-projects list">
             <div style={S.visRow}>
-              <button style={{ ...S.visBtn, ...(form.featured ? {} : S.visPriv) }} onClick={() => set("featured", false)}>off</button>
-              <button style={{ ...S.visBtn, ...(form.featured ? S.visPub : {}) }} onClick={() => set("featured", true)}>top</button>
+              <button style={{ ...S.visBtn, ...(form.top ? {} : S.visPriv) }} onClick={() => set("top", false)}>off</button>
+              <button style={{ ...S.visBtn, ...(form.top ? S.visPub : {}) }} onClick={() => set("top", true)}>top</button>
+            </div>
+          </Field>
+          <Field label="homepage demo" hint="shows this project in the featured demos grid (embeds live — needs artifactHtml or embeddable link)">
+            <div style={S.visRow}>
+              <button style={{ ...S.visBtn, ...(form.showcase ? {} : S.visPriv) }} onClick={() => set("showcase", false)}>off</button>
+              <button style={{ ...S.visBtn, ...(form.showcase ? S.visPub : {}) }} onClick={() => set("showcase", true)}>show</button>
             </div>
           </Field>
           <Field label="live link" hint="netlify/vercel URLs auto-enable the live demo tab"><input value={form.link || ""} onChange={e => set("link", e.target.value)} placeholder="https://mysite.com" /></Field>
@@ -169,7 +175,7 @@ export default function ProjectForm({ project, onSave, onCancel, onBackdropClose
         </div>
         {onDelete && project.id && (
           <div style={{ marginTop: 16, borderTop: "1px solid var(--border)", paddingTop: 12 }}>
-            <button onClick={() => setShowDanger(!showDanger)} style={{ background: "none", border: "none", fontFamily: "inherit", fontSize: 11, color: "#5a2020", cursor: "pointer", padding: 0 }}>
+            <button onClick={() => setShowDanger(!showDanger)} style={{ background: "none", border: "none", fontFamily: "inherit", fontSize: 11, color: "var(--red)", opacity: 0.7, cursor: "pointer", padding: 0 }}>
               {showDanger ? "v" : ">"} danger zone
             </button>
             {showDanger && (
@@ -178,7 +184,7 @@ export default function ProjectForm({ project, onSave, onCancel, onBackdropClose
                 <input value={deleteConfirm} onChange={e => setDeleteConfirm(e.target.value)} placeholder={project.name} style={{ marginBottom: 8 }} />
                 <button
                   onClick={() => { if (deleteConfirm === project.name) onDelete(project.id); }}
-                  style={{ ...S.cancelBtn, background: deleteConfirm === project.name ? "#2a1010" : "none", borderColor: deleteConfirm === project.name ? "#3d1818" : "var(--border)", color: deleteConfirm === project.name ? "#f87171" : "#3a3f48", width: "100%", textAlign: "center", cursor: deleteConfirm === project.name ? "pointer" : "default" }}
+                  style={{ ...S.cancelBtn, background: deleteConfirm === project.name ? "var(--red-bg)" : "none", borderColor: deleteConfirm === project.name ? "var(--red-border)" : "var(--border)", color: deleteConfirm === project.name ? "var(--red)" : "var(--dimmer)", width: "100%", textAlign: "center", cursor: deleteConfirm === project.name ? "pointer" : "default" }}
                 >delete project</button>
               </div>
             )}
@@ -199,8 +205,8 @@ function Field({ label, hint, children }) {
 }
 
 const S = {
-  overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.78)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 },
-  modal: { background: "#0e0f12", border: "1px solid var(--border)", borderRadius: 6, padding: "20px 22px", width: "100%", maxWidth: 520, maxHeight: "90vh", display: "flex", flexDirection: "column" },
+  overlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: 16 },
+  modal: { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--radius-card)", boxShadow: "var(--shadow-card-hover)", padding: "20px 22px", width: "100%", maxWidth: 520, maxHeight: "90vh", display: "flex", flexDirection: "column" },
   modalTitle: { fontSize: 13, color: "var(--green)", fontWeight: 500, marginBottom: 16, flexShrink: 0 },
   scroll: { flex: 1, overflowY: "auto", paddingRight: 4 },
   row: { display: "flex", gap: 12 },
@@ -208,7 +214,7 @@ const S = {
   hint: { textTransform: "none", letterSpacing: 0, color: "var(--dimmer)" },
   visRow: { display: "flex", gap: 8 },
   visBtn: { flex: 1, background: "none", border: "1px solid var(--border)", borderRadius: 3, color: "var(--dim)", fontFamily: "inherit", fontSize: 11, padding: "5px 12px", cursor: "pointer" },
-  visPriv: { borderColor: "var(--border-hover)", color: "var(--text)", background: "#111215" },
+  visPriv: { borderColor: "var(--border-hover)", color: "var(--text)", background: "var(--surface-2)" },
   visPub: { borderColor: "var(--green-border)", color: "var(--green)", background: "var(--green-bg)" },
   inlineAdd: { display: "flex", gap: 6, marginBottom: 6 },
   listItem: { display: "flex", alignItems: "center", padding: "6px 8px", background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 3, marginBottom: 4 },

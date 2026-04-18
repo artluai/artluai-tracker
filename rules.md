@@ -14,8 +14,12 @@
 - When renaming projects on artlu.ai, update the matching source name in xqboost Firestore at the same time — the sync script matches by name and will create duplicates otherwise
 - Filter sources with list_sources(status: 'active') to exclude paused/duplicate entries — there are legacy garbled sources marked paused in Firestore
 
-## Design System
-- Font: IBM Plex Mono
+## Design System — Dual Theme
+
+Two themes share the same DOM. Switched via `html[data-theme="light|dark"]`. Default is `light`. Persisted in `localStorage` under `artlu-theme`.
+
+### Dark theme (terminal — unchanged identity)
+- Font: IBM Plex Mono everywhere
 - Background: #08090a
 - Surface: #0e0f11
 - Border: #1a1d22
@@ -29,9 +33,36 @@
 - Max width: 1200px
 - Top padding: 48px
 - Two font sizes only: 12px titles, 11px everything else
+- Border radius: 3–4px
+- No shadows
+
+### Light theme (Shopify Polaris-inspired)
+- Font: Inter for display/body, IBM Plex Mono for stats/counters/eyebrow/tags/filter chips (anything that should read as "data")
+- Background: #f6f6f7 (soft gray canvas)
+- Surface: #ffffff (cards float on canvas)
+- Surface-2: #fafafb
+- Border: #e3e3e3
+- Divider: #ebebeb
+- Text bright: #1a1a1a
+- Text: #303030
+- Text sub: #616161
+- Dim: #8a8a8a
+- Green accent: #008060 (Shopify dark green)
+- Green background: #ebf9f4
+- Green border: #a8e6cd
+- Max width: 1280px (slightly wider, cards need room)
+- Border radius: 12px on cards, 6px on buttons, 3px on tiny chips
+- Shadow: `0 1px 0 rgba(0,0,0,0.05), 0 0 0 1px rgba(0,0,0,0.03)` on cards
+- Title: 40px Inter 700, letter-spacing -0.03em
+- Body: 14px Inter
+
+### Shared rules (apply to both themes)
 - Header says "artlu.ai" not "artluai"
-- No new accent colors — everything interactive is green. No purple, no extra palette. If it's clickable, it's green.
+- No new accent colors — everything interactive is green. No purple, no extra palette.
+- Status colors (launched/building/idea/abandoned) are the only other semantic colors allowed
 - Favicon: $_ terminal prompt (green on dark), SVG in public/favicon.svg
+- Theme toggle lives in the top nav as a sun/moon icon between `journal` and `sign in`
+- All color/spacing/font values come from CSS variables scoped to `html[data-theme]` — no hardcoded theme-specific values in components
 
 ## Table (Desktop)
 - Columns: project, status, stack, date, links, vis, ops
@@ -54,14 +85,58 @@
 - Date and links share one bottom line
 
 ## Public View
-- Tagline: "100 projects. 100 days."
+
+### Layout (both themes)
+- Page header is a 2-column grid: title stack (left) + activity card (right)
+- Below the header: "showcase demos" section (projects with `showcase === true`, up to 6 in a 3×2 grid)
+- Below that: "All projects" section with filter bar + full project table
+- On narrow screens (≤960px) the activity card stacks below the title
+
+### Page header (left column)
+- Eyebrow: green dot + "Day X of 100 · live build" (small mono)
+- Title: "100 projects. 100 days."
+- Subtitle: "One person. No coding experience. Just AI and an internet connection. Try every shipped tool in your browser — no installs, no signups."
 - Counter: "day X/100 · X shipped · X to go"
-- Bio: "one person. no coding experience. just AI and an internet connection."
-- Tag filter bar above table: "filter: all | ecom | trading | chrome ext | dev tool | artlu"
-- Filter buttons match journal filter style (green active, dim inactive)
-- Shows project count: "X projects"
+
+### Activity card (right column)
+- Internal 2-column layout: stats (left) | heatmap (right), divided by a thin vertical rule
+- Stats column: uniform 13px mono, labels weight 400, values weight 600, same height across rows
+  - `day {dayNum} / 100`
+  - `shipped {launchedCount}`
+  - `to go {100 - projectCount}`
+  - `active {activeDaysCount} days`
+- Heatmap: 14 weeks, fixed 12px cells, tracker-data-based (counts shipped projects per day — NOT github commits, the human doesn't code)
+  - Head: "streaks {current}/{best}" (no duplicate "X active" — that's already in stats)
+  - Day labels: Sun–Sat (every other visible)
+  - Month labels row above the grid
+  - Intensity levels l1–l4 from `1` to `4+` items per day
+
+### Showcase demos section
+- Section title: "showcase demos", meta: "{shown} of {total} projects"
+- Driven by `showcase === true` (separate from `top` — see "Flags" below)
+- Wrapped in a true full-bleed soft-green band in light mode (`rgba(0, 128, 96, 0.04)` background, no borders, extends edge-to-edge via `calc(50% - 50vw)` margins); transparent in dark mode
+- 3×2 grid at desktop, 2-col at 900px, 1-col at 600px
+- Preview is phone-shaped (9:16 aspect ratio) so responsive sites render their mobile view
+- Card preview embeds live: `artifactHtml` via `srcDoc` → embeddable link via `src` (allowlist: netlify/vercel/github.io/pages.dev/render/railway/fly/surge) → screenshot → `$_` placeholder
+- Card body (not iframe) navigates to detail; `↗` button in preview top-right also navigates
+- Cards hover: shadow lift + 1px translateY (light), green border (dark — no transform)
+
+### Flags: `top` vs `showcase`
+- `top: true` — drives the `★ top` filter pill in the all-projects filter bar. These are the "best work" picks, visible as a filter only.
+- `showcase: true` — manually curated by the human for the homepage "showcase demos" embed grid. Two requirements, both must be met: (1) the project must embed well — has `artifactHtml` or an embeddable live link, AND (2) the human explicitly picks it. Embeddability alone does NOT qualify a project for showcase. Capped at 6.
+- The two flags are independent: a project can be `top` without being `showcase`, and vice versa. Typically the set overlaps heavily but not always (e.g. a "top" project with no live demo is top-only).
+
+### All projects section
+- Filter bar on public view: `all | ★ top | [tags...] · X projects`
+  - `all` = everything, `top` = `top === true` projects (independent from the homepage `showcase` flag), rest = tag filters
+- Filter buttons match journal filter style (green active, subtle inactive)
 - Filter bar only shows when projects have tags
+- Below filter bar: project table (desktop) or card stack (mobile <640px)
 - No footer
+
+### Shared content constants
+- Tagline: "100 projects. 100 days."
+- Bio: "one person. no coding experience. just AI and an internet connection."
 
 ## Dashboard View
 - Compact stats: "$ day X/100 · tracking X projects · X launched · X public · X to go"
