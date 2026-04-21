@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getPublicProjects } from "../lib/db";
+import { subscribeToPublicProjects } from "../lib/db";
 import { useTheme } from "../lib/theme";
 import Header from "./Header";
 import ProjectTable from "./ProjectTable";
@@ -44,11 +44,12 @@ export default function PublicView() {
   const [activeTag, setActiveTag] = useState("all");
 
   useEffect(() => {
-    (async () => {
-      try { const data = await getPublicProjects(); setProjects(data); }
-      catch (err) { setError("failed to load: " + err.message); }
-      finally { setLoading(false); }
-    })();
+    // Live Firestore listener — public projects update in place without reload.
+    const unsubscribe = subscribeToPublicProjects(
+      (data) => { setProjects(data); setLoading(false); },
+      (err) => { setError("failed to load: " + err.message); setLoading(false); }
+    );
+    return unsubscribe;
   }, []);
 
   const sorted = sortProjects(projects);

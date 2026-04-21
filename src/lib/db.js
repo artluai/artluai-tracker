@@ -1,6 +1,6 @@
 import {
   collection, doc, getDocs, getDoc, addDoc, updateDoc, deleteDoc,
-  query, where, orderBy, serverTimestamp, writeBatch
+  query, where, orderBy, serverTimestamp, writeBatch, onSnapshot
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -23,6 +23,26 @@ export async function getPublicProjects() {
   );
   const snap = await getDocs(q);
   return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+}
+
+/**
+ * Live-subscribe to the public projects collection. Returns an unsubscribe fn.
+ * Call the returned fn in useEffect cleanup to stop listening.
+ *
+ * The callback fires once immediately with the initial snapshot, then again
+ * on every add/change/delete in Firestore.
+ */
+export function subscribeToPublicProjects(onChange, onError) {
+  const q = query(
+    collection(db, PROJECTS),
+    where("visibility", "==", "public"),
+    orderBy("createdAt", "desc")
+  );
+  return onSnapshot(
+    q,
+    (snap) => onChange(snap.docs.map(d => ({ id: d.id, ...d.data() }))),
+    (err) => { if (onError) onError(err); }
+  );
 }
 
 export async function getProject(id) {

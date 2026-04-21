@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useTheme } from "../lib/theme";
 
 const START_DATE = "2026-03-18";
@@ -25,14 +26,17 @@ function levelFor(count) {
 }
 
 /**
- * Build a map of { "YYYY-MM-DD": count } from projects' date field.
- * Counts each project once on its launch date.
+ * Build a map of { "YYYY-MM-DD": [project name, ...] } from projects' date field.
+ * Each project lands on the day in its `date` field. Names are used for the
+ * heatmap tooltip; `length` gives the count for level coloring.
  */
 function buildActivityMap(projects) {
   const map = new Map();
   for (const p of projects) {
     if (!p.date) continue;
-    map.set(p.date, (map.get(p.date) || 0) + 1);
+    const list = map.get(p.date) || [];
+    list.push(p.name || "(unnamed)");
+    map.set(p.date, list);
   }
   return map;
 }
@@ -46,11 +50,13 @@ function computeStreaks(activityMap) {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   if (today < start) return { current: 0, best: 0, active: 0 };
 
+  // activityMap values are arrays of names — treat "has entries" as active.
+  const hasActivity = (key) => (activityMap.get(key) || []).length > 0;
+
   let current = 0, best = 0, run = 0, active = 0;
   for (let d = new Date(start); d <= today; d.setDate(d.getDate() + 1)) {
     const key = ymd(d);
-    const has = activityMap.has(key);
-    if (has) {
+    if (hasActivity(key)) {
       run += 1;
       active += 1;
       if (run > best) best = run;
@@ -61,7 +67,7 @@ function computeStreaks(activityMap) {
   // Current streak ends on today — walk backwards from today until we hit a miss.
   current = 0;
   for (let d = new Date(today); d >= start; d.setDate(d.getDate() - 1)) {
-    if (activityMap.has(ymd(d))) current += 1;
+    if (hasActivity(ymd(d))) current += 1;
     else break;
   }
   return { current, best, active };
@@ -69,9 +75,12 @@ function computeStreaks(activityMap) {
 
 function buildGrid() {
   const today = new Date(); today.setHours(0, 0, 0, 0);
-  const start = new Date(today);
-  start.setDate(today.getDate() - (TOTAL_WEEKS * 7) + 1);
-  while (start.getDay() !== 0) start.setDate(start.getDate() - 1);
+  // Anchor the window's END on the Saturday of today's week so today is always
+  // inside the grid. Then walk back 14 weeks to land on a Sunday.
+  const end = new Date(today);
+  end.setDate(today.getDate() + (6 - today.getDay()));
+  const start = new Date(end);
+  start.setDate(end.getDate() - (TOTAL_WEEKS * 7) + 1);
 
   const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const monthLabelByWeek = [];
@@ -96,6 +105,20 @@ function buildGrid() {
 export default function ActivityCard({ projects }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+
+  // Re-render at local midnight so the day counter + "today" logic roll over
+  // without needing a full page reload. Schedules one timer, then re-schedules
+  // itself recursively. `tick` is bumped only to force a render — its value
+  // isn't read anywhere.
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const now = new Date();
+    const nextMidnight = new Date(now);
+    nextMidnight.setHours(24, 0, 0, 0);
+    const msUntilMidnight = nextMidnight - now;
+    const id = setTimeout(() => setTick((t) => t + 1), msUntilMidnight + 1000);
+    return () => clearTimeout(id);
+  });
 
   const activityMap = buildActivityMap(projects);
   const { current, best, active } = computeStreaks(activityMap);
@@ -140,14 +163,23 @@ export default function ActivityCard({ projects }) {
               {cells.map((date, i) => {
                 const beforeStart = date < projectStart;
                 const inFuture = date > today;
-                const count = (!beforeStart && !inFuture) ? (activityMap.get(ymd(date)) || 0) : 0;
+                const names = (!beforeStart && !inFuture) ? (activityMap.get(ymd(date)) || []) : [];
+                const count = names.length;
                 const level = levelFor(count);
                 const cls = "heatmap-cell" + (level ? " l" + level : "");
-                const title = beforeStart
-                  ? date.toDateString()
-                  : inFuture
-                  ? date.toDateString() + " — future"
-                  : date.toDateString() + " — " + (count === 0 ? "no activity" : count + " project" + (count === 1 ? "" : "s"));
+                const dateLabel = date.toDateString();
+                let title;
+                if (beforeStart) {
+                  title = dateLabel;
+                } else if (inFuture) {
+                  title = dateLabel + " — future";
+                } else if (count === 0) {
+                  title = dateLabel + " — no activity";
+                } else {
+                  // Native title tooltips render \n as a newline on most browsers.
+                  title = dateLabel + " — " + count + " project" + (count === 1 ? "" : "s")
+                    + "\n" + names.map(n => "• " + n).join("\n");
+                }
                 return <div key={i} className={cls} title={title} />;
               })}
             </div>
