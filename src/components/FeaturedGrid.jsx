@@ -19,7 +19,7 @@ export default function FeaturedGrid({ projects, totalProjectCount }) {
     <div style={isDark ? S.bandDark : S.bandLight}>
       <div style={S.inner}>
         <div style={S.sectionHead}>
-          <div style={isDark ? S.titleDark : S.titleLight}>showcase demos</div>
+          <div style={isDark ? S.titleDark : S.titleLight}>demo showcase</div>
           <div style={S.meta}>{featured.length} of {totalProjectCount || projects.length} projects</div>
         </div>
         <div style={S.grid}>

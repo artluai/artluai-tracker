@@ -11,3 +11,8 @@
   from = "/project/*"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/video/*"
+  to = "/index.html"
+  status = 200

@@ -5,6 +5,7 @@ import Header from "./Header";
 import ProjectTable from "./ProjectTable";
 import ActivityCard from "./ActivityCard";
 import FeaturedGrid from "./FeaturedGrid";
+import VideoShowcase from "./VideoShowcase";
 
 const START_DATE = "2026-03-18";
 
@@ -107,7 +108,10 @@ export default function PublicView() {
         )}
       </div>
 
-      {/* Featured demos */}
+      {/* Video showcase — shipped videos with per-video guidebook pages */}
+      <VideoShowcase />
+
+      {/* Demo showcase — live embeds (formerly "showcase demos") */}
       {!loading && <FeaturedGrid projects={sorted} totalProjectCount={projects.length} />}
 
       {/* All projects — section header + filter bar + table */}
