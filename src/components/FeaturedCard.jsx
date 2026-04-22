@@ -206,8 +206,20 @@ const S = {
     color: "var(--text-bright)",
   },
 
-  descLight: { fontSize: 13, color: "var(--text-sub)", lineHeight: 1.45, flex: 1 },
-  descDark:  { fontSize: 11, color: "var(--text-sub)", lineHeight: 1.5,  flex: 1, fontFamily: "var(--font-mono)" },
+  descLight: {
+    fontSize: 13, color: "var(--text-sub)", lineHeight: 1.45, flex: 1,
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+  },
+  descDark: {
+    fontSize: 11, color: "var(--text-sub)", lineHeight: 1.5, flex: 1, fontFamily: "var(--font-mono)",
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+  },
 
   cta: {
     fontFamily: "var(--font-mono)",

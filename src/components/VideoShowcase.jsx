@@ -18,7 +18,11 @@ export default function VideoShowcase() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const width = useWidth();
-  const [videos, setVideos] = useState([]);
+  // `null` = fetch in flight, `[]` = no videos shipped yet, `[...]` = data.
+  // Rendering the section shell on first paint (not returning null) keeps the
+  // layout height stable so browser scroll-restoration doesn't latch onto a
+  // pixel that drifts once the fetch resolves.
+  const [videos, setVideos] = useState(null);
 
   useEffect(() => {
     fetch("/videos/index.json")
@@ -33,22 +37,24 @@ export default function VideoShowcase() {
   else if (width < 820) cols = 2;
   else if (width < 1100) cols = 3;
 
+  // During fetch, reserve one row of blanks so height is stable.
+  const loading = videos === null;
+  const list = loading ? [] : videos;
+
   // Grow rows as videos ship, up to MAX_ROWS on multi-column layouts.
   // Mobile (1 col) stacks all shipped videos — row cap doesn't apply.
   const rowCap = cols > 1 ? MAX_ROWS : Infinity;
-  const rowsNeeded = Math.max(1, Math.ceil(videos.length / cols));
+  const rowsNeeded = Math.max(1, Math.ceil(list.length / cols));
   const rows = Math.min(rowsNeeded, rowCap);
   const slots = rows * cols;
-  const shown = videos.slice(0, slots);
+  const shown = list.slice(0, slots);
   const blanks = cols > 1 ? Math.max(0, slots - shown.length) : 0;
-
-  if (videos.length === 0) return null;
 
   return (
     <div style={S.section}>
       <div style={S.sectionHead}>
         <div style={isDark ? S.titleDark : S.titleLight}>video showcase</div>
-        <div style={S.meta}>{videos.length} shipped</div>
+        <div style={S.meta}>{loading ? "…" : `${videos.length} shipped`}</div>
       </div>
       <div style={isDark ? S.descDark : S.descLight}>
         every video here is made with <strong>spoolcast</strong>{" "}

@@ -72,9 +72,9 @@ export default function PublicView() {
       <Header projectCount={projects.length} launchedCount={launched} publicCount={projects.length} isPublic={true} />
       {error && <div style={{ color: "var(--red)", fontSize: 11, marginBottom: 10 }}>{error}</div>}
 
-      {/* Hero / page header — 2 cols: title stack | activity card */}
-      <div style={{ ...S.pageHeader, gridTemplateColumns: narrowHero ? "1fr" : "minmax(0, 1fr) auto" }}>
-        <div style={{ ...S.pageHeaderLeft, maxWidth: narrowHero ? "none" : 560 }}>
+      {/* Hero / page header — snaps to the same 4-col grid as the showcase sections below */}
+      <div style={{ ...S.pageHeader, gridTemplateColumns: narrowHero ? "1fr" : "repeat(4, minmax(0, 1fr))" }}>
+        <div style={{ ...S.pageHeaderLeft, gridColumn: narrowHero ? "auto" : "span 3", maxWidth: narrowHero ? "none" : "none" }}>
           <div style={S.eyebrow}>
             <span style={S.eyebrowDot} />
             day {day} of 100 · live build
@@ -102,7 +102,7 @@ export default function PublicView() {
         </div>
 
         {!loading && projects.length > 0 && (
-          <div style={S.pageHeaderRight}>
+          <div style={{ ...S.pageHeaderRight, gridColumn: narrowHero ? "auto" : "span 1" }}>
             <ActivityCard projects={projects} />
           </div>
         )}

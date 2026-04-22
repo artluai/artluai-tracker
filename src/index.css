@@ -198,3 +198,9 @@ html[data-theme="dark"] .heatmap-cell.l1 { background: #0f2a1a; border-color: #1
 html[data-theme="dark"] .heatmap-cell.l2 { background: #1a5234; border-color: #226b45; }
 html[data-theme="dark"] .heatmap-cell.l3 { background: #2da66a; border-color: #2da66a; }
 html[data-theme="dark"] .heatmap-cell.l4 { background: #4ade80; border-color: #4ade80; }
+
+.heatmap-cell:hover {
+  outline: 1.5px solid var(--text-bright);
+  outline-offset: 1px;
+  cursor: pointer;
+}

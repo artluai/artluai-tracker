@@ -132,21 +132,7 @@ export default function ActivityCard({ projects }) {
 
   return (
     <div style={isDark ? S.wrapDark : S.wrapLight}>
-      <div style={S.stats}>
-        <div style={S.row}><span style={S.key}>day</span><span style={S.val}>{day} / 100</span></div>
-        <div style={S.row}><span style={S.key}>shipped</span><span style={S.val}>{launched}</span></div>
-        <div style={S.row}><span style={S.key}>to go</span><span style={S.val}>{toGo}</span></div>
-        <div style={S.row}><span style={S.key}>active</span><span style={S.val}>{active} {active === 1 ? "day" : "days"}</span></div>
-      </div>
-
       <div style={S.heatmapMain}>
-        <div style={S.heatmapHead}>
-          <span style={S.heatmapHeadText}>
-            streaks <strong style={{ color: "var(--green)", fontWeight: 600 }}>{current}</strong>
-            <span style={{ color: "var(--text-sub, var(--dim))" }}>/</span>
-            <strong style={{ color: "var(--green)", fontWeight: 600 }}>{best}</strong>
-          </span>
-        </div>
         <div style={S.gridWrap}>
           <div style={S.dayLabels}>
             {["Sun","","Tue","","Thu","","Sat"].map((label, i) => (
@@ -185,6 +171,11 @@ export default function ActivityCard({ projects }) {
             </div>
           </div>
         </div>
+        <div style={S.streaksFooter}>
+          streaks <strong style={S.streakNum}>{current}</strong>
+          <span style={S.streakSlash}>/</span>
+          <strong style={S.streakNum}>{best}</strong>
+        </div>
       </div>
     </div>
   );
@@ -201,6 +192,7 @@ const S = {
     display: "flex",
     gap: 18,
     alignItems: "stretch",
+    justifyContent: "center",
   },
   wrapDark: {
     background: "var(--surface)",
@@ -210,6 +202,7 @@ const S = {
     display: "flex",
     gap: 16,
     alignItems: "stretch",
+    justifyContent: "center",
   },
 
   // Stats column
@@ -227,13 +220,17 @@ const S = {
   val: { color: "var(--text-bright)", fontWeight: 600 },
 
   // Heatmap
-  heatmapMain: { display: "flex", flexDirection: "column" },
-  heatmapHead: {
-    display: "flex", alignItems: "baseline", justifyContent: "flex-start",
-    fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--text-sub, var(--dim))",
-    marginBottom: 8,
+  heatmapMain: { display: "flex", flexDirection: "column", justifyContent: "center" },
+  streaksFooter: {
+    marginTop: 2,
+    textAlign: "right",
+    fontFamily: "var(--font-mono)",
+    fontSize: 11,
+    color: "var(--text-bright)",
+    fontWeight: 500,
   },
-  heatmapHeadText: { color: "var(--text-bright)", fontWeight: 500 },
+  streakNum: { color: "var(--green)", fontWeight: 600 },
+  streakSlash: { color: "var(--text-sub, var(--dim))" },
   gridWrap: { display: "flex", gap: 6 },
   dayLabels: {
     display: "grid", gridTemplateRows: "repeat(7, 12px)", gap: 2,
