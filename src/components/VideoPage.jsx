@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTheme } from "../lib/theme";
 import Header from "./Header";
-import { getVideoBundle } from "../lib/video-mock-data";
 
 function fmtDateFull(d) {
   if (!d) return "";
@@ -16,6 +15,39 @@ function fmtDuration(sec) {
   const s = sec % 60;
   return `${m}m ${s}s`;
 }
+
+function SummaryRow({ label, value, isLast }) {
+  const style = isLast ? { ...sumRowStyle, borderBottom: 0 } : sumRowStyle;
+  return (
+    <div style={style}>
+      <div style={sumLabelStyle}>{label}</div>
+      <div style={sumValueStyle}>{value}</div>
+    </div>
+  );
+}
+
+const sumRowStyle = {
+  display: "grid",
+  gridTemplateColumns: "140px 1fr",
+  gap: 16,
+  padding: "10px 0",
+  borderBottom: "1px solid var(--divider)",
+  alignItems: "baseline",
+};
+const sumLabelStyle = {
+  fontFamily: "var(--font-mono)",
+  fontSize: 10,
+  color: "var(--dim)",
+  textTransform: "uppercase",
+  letterSpacing: "0.06em",
+  whiteSpace: "nowrap",
+};
+const sumValueStyle = {
+  fontFamily: "var(--font-mono)",
+  fontSize: 12,
+  color: "var(--text)",
+  lineHeight: 1.5,
+};
 
 function AuditBadge({ label, passed, notes }) {
   const { theme } = useTheme();
@@ -45,7 +77,13 @@ function ChunkRow({ chunk, index }) {
           />
         ) : (
           <div style={S.chunkThumbEmpty}>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "var(--dim)" }}>no image</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "var(--dim)", textAlign: "center", padding: "0 6px" }}>
+              {chunk.imageSource === "broll"
+                ? "broll (video clip)"
+                : chunk.imageSource
+                ? chunk.imageSource
+                : "no image"}
+            </span>
           </div>
         )}
       </div>
@@ -81,22 +119,47 @@ export default function VideoPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [transcriptOpen, setTranscriptOpen] = useState(false);
+  const [bundle, setBundle] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const bundle = getVideoBundle(id);
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    fetch(`/videos/${id}/bundle.json`)
+      .then(r => {
+        if (!r.ok) throw new Error(r.status === 404 ? "video not found" : `load failed: ${r.status}`);
+        return r.json();
+      })
+      .then(data => { if (!cancelled) { setBundle(data); setLoading(false); } })
+      .catch(err => { if (!cancelled) { setError(err.message); setLoading(false); } });
+    return () => { cancelled = true; };
+  }, [id]);
 
-  if (!bundle) {
+  if (loading) {
+    return (
+      <div style={S.wrap}>
+        <Header isPublic={true} />
+        <div style={{ padding: "40px 0", textAlign: "center", color: "var(--dim)", fontSize: 11 }}>loading...</div>
+      </div>
+    );
+  }
+
+  if (error || !bundle) {
     return (
       <div style={S.wrap}>
         <Header isPublic={true} />
         <div style={{ textAlign: "center", padding: "60px 20px" }}>
-          <div style={{ fontSize: 14, color: "var(--red)", marginBottom: 8 }}>$ video not found</div>
+          <div style={{ fontSize: 14, color: "var(--red)", marginBottom: 8 }}>$ {error || "video not found"}</div>
           <button onClick={() => navigate("/")} style={S.backBtn}>← back</button>
         </div>
       </div>
     );
   }
 
-  const visibleChunks = bundle.chunks.filter(c => !bundle.showcase.hiddenChunkIds.includes(c.id));
+  const hidden = new Set(bundle.showcase?.hiddenChunkIds || []);
+  const visibleChunks = (bundle.chunks || []).filter(c => !hidden.has(c.id));
 
   return (
     <div style={S.wrap}>
@@ -117,10 +180,12 @@ export default function VideoPage() {
           <span>{fmtDateFull(bundle.shippedAt)}</span>
           <span style={S.metaSep}>·</span>
           <span>{fmtDuration(bundle.durationSec)}</span>
+          {bundle.style?.name && <>
+            <span style={S.metaSep}>·</span>
+            <span>style: {bundle.style.name}</span>
+          </>}
           <span style={S.metaSep}>·</span>
-          <span>style: {bundle.style.name}</span>
-          <span style={S.metaSep}>·</span>
-          <span>{bundle.auditSummary.totalBeats || visibleChunks.length} {bundle.auditSummary.totalBeats ? "beats" : "chunks"}</span>
+          <span>{bundle.summary?.audio?.beatCount || visibleChunks.length} {bundle.summary?.audio?.beatCount ? "beats" : "chunks"}</span>
         </div>
       </div>
 
@@ -152,7 +217,7 @@ export default function VideoPage() {
       )}
 
       {/* Style library panel */}
-      <section style={S.section}>
+      {bundle.style && <section style={S.section}>
         <div style={S.sectionHead}>
           <div style={isDark ? S.h2Dark : S.h2Light}>style library</div>
           <div style={S.sectionMeta}>{bundle.style.name}</div>
@@ -183,7 +248,7 @@ export default function VideoPage() {
                     )}
                     <div style={S.refCardBody}>
                       <div style={S.refName}>{r.name} <span style={S.refKind}>{r.kind}</span></div>
-                      <div style={S.refDesc}>{r.description}</div>
+                      <div style={S.refDesc} title={r.description}>{r.description}</div>
                     </div>
                   </div>
                 ))}
@@ -191,55 +256,113 @@ export default function VideoPage() {
             </>
           )}
         </div>
-      </section>
+      </section>}
 
-      {/* Audit summary */}
-      <section style={S.section}>
-        <div style={S.sectionHead}>
-          <div style={isDark ? S.h2Dark : S.h2Light}>audit summary</div>
-        </div>
-        <div style={isDark ? S.auditPanelDark : S.auditPanelLight}>
-          <div style={S.auditStat}>
-            <span style={S.auditStatLabel}>total beats</span>
-            <span style={S.auditStatValue}>{bundle.auditSummary.totalBeats || "—"}</span>
+      {/* Summary — how this video was made */}
+      {bundle.summary && (
+        <section style={S.section}>
+          <div style={S.sectionHead}>
+            <div style={isDark ? S.h2Dark : S.h2Light}>summary</div>
+            <div style={S.sectionMeta}>how this video was made</div>
           </div>
-          <div style={S.auditStat}>
-            <span style={S.auditStatLabel}>narration flags</span>
-            <span style={S.auditStatValue}>{bundle.auditSummary.narrationFlags}</span>
+          <div style={isDark ? S.summaryPanelDark : S.summaryPanelLight}>
+            {(() => {
+              const rows = [];
+              const s = bundle.summary;
+              if (s.writing) rows.push({
+                label: "writing",
+                value: <><strong>{s.writing.author}</strong><span style={S.dim}> · {s.writing.role}</span></>,
+              });
+              if (s.images) rows.push({
+                label: "images",
+                value: <>
+                  <strong>{s.images.platform}</strong>
+                  {s.images.models?.length > 0 && <>
+                    <span style={S.dim}> · </span>
+                    <span>{s.images.models.join(", ")}</span>
+                  </>}
+                  {s.images.sceneCount > 0 && <>
+                    <span style={S.dim}> · {s.images.sceneCount} scenes</span>
+                  </>}
+                </>,
+              });
+              if (s.audio) rows.push({
+                label: "audio",
+                value: <>
+                  <strong>{s.audio.tts}</strong>
+                  <span style={S.dim}> · voice: </span>
+                  <span>{s.audio.voice}</span>
+                  {s.audio.playbackRate && <><span style={S.dim}> · {s.audio.playbackRate}×</span></>}
+                  {s.audio.beatCount > 0 && <><span style={S.dim}> · {s.audio.beatCount} beats</span></>}
+                </>,
+              });
+              if (s.render) rows.push({
+                label: "render",
+                value: <>
+                  <strong>{s.render.engine}</strong>
+                  <span style={S.dim}> · </span>
+                  <span style={{ color: s.render.passed ? "var(--green)" : "var(--red)" }}>
+                    {s.render.passed ? "✓ passed" : "! failed"}
+                  </span>
+                </>,
+              });
+              if (s.audit) rows.push({
+                label: "narration audit",
+                value: <>
+                  <strong>{s.audit.narrationModel}</strong>
+                  <span style={S.dim}> · {s.audit.narrationFlags} flag{s.audit.narrationFlags === 1 ? "" : "s"}</span>
+                </>,
+              });
+              return rows.map((r, i) => (
+                <SummaryRow key={r.label} label={r.label} value={r.value} isLast={i === rows.length - 1} />
+              ));
+            })()}
           </div>
-          <div style={S.auditStat}>
-            <span style={S.auditStatLabel}>narration model</span>
-            <span style={S.auditStatValue}>{bundle.auditSummary.narrationModel || "—"}</span>
-          </div>
-          <div style={S.auditStat}>
-            <span style={S.auditStatLabel}>render</span>
-            <span style={{ ...S.auditStatValue, color: bundle.auditSummary.renderPassed ? "var(--green)" : "var(--red)" }}>
-              {bundle.auditSummary.renderPassed ? "✓ passed" : "! failed"}
-            </span>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Chunks */}
-      <section style={S.section}>
-        <div style={S.sectionHead}>
-          <div style={isDark ? S.h2Dark : S.h2Light}>chunks ({visibleChunks.length})</div>
-          <div style={S.sectionMeta}>each chunk = one scene image + narration beats</div>
-        </div>
-        <div style={S.chunkList}>
-          {visibleChunks.map((c, i) => <ChunkRow key={c.id} chunk={c} index={i} />)}
-        </div>
-      </section>
+      {visibleChunks.length > 0 && (
+        <section style={S.section}>
+          <div style={S.sectionHead}>
+            <div style={isDark ? S.h2Dark : S.h2Light}>chunks ({visibleChunks.length})</div>
+            <div style={S.sectionMeta}>each chunk = one scene image + narration beats</div>
+          </div>
+          <div style={S.chunkList}>
+            {visibleChunks.map((c, i) => <ChunkRow key={c.id} chunk={c} index={i} />)}
+          </div>
+        </section>
+      )}
 
-      {/* Transcript */}
-      <section style={S.section}>
-        <button style={S.transcriptToggle} onClick={() => setTranscriptOpen(o => !o)}>
-          {transcriptOpen ? "▾" : "▸"} full transcript
-        </button>
-        {transcriptOpen && (
-          <div style={isDark ? S.transcriptBoxDark : S.transcriptBoxLight}>{bundle.transcript}</div>
-        )}
-      </section>
+      {/* Transcript — structured from chunks so scene titles break the flow */}
+      {(bundle.transcript || visibleChunks.length > 0) && (
+        <section style={S.section}>
+          <button style={S.transcriptToggle} onClick={() => setTranscriptOpen(o => !o)}>
+            {transcriptOpen ? "▾" : "▸"} full transcript
+          </button>
+          {transcriptOpen && (
+            <div style={isDark ? S.transcriptBoxDark : S.transcriptBoxLight}>
+              {visibleChunks.length > 0 ? (() => {
+                let prevSceneTitle = null;
+                return visibleChunks.map(c => {
+                  const showHeading = c.sceneTitle && c.sceneTitle !== prevSceneTitle;
+                  prevSceneTitle = c.sceneTitle;
+                  return (
+                    <div key={c.id}>
+                      {showHeading && <div style={S.transcriptSceneHead}>{c.sceneTitle}</div>}
+                      {(c.beats || []).map(b => (
+                        <p key={b.id} style={S.transcriptBeat}>{b.narration}</p>
+                      ))}
+                    </div>
+                  );
+                });
+              })() : (
+                <p style={S.transcriptBeat}>{bundle.transcript}</p>
+              )}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }
@@ -420,8 +543,9 @@ const S = {
   },
   refGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fill, minmax(160px, 200px))",
     gap: 12,
+    justifyContent: "start",
   },
   refCardLight: {
     background: "var(--surface-2)",
@@ -455,27 +579,30 @@ const S = {
     color: "var(--dim)",
     marginLeft: 4,
   },
-  refDesc: { fontSize: 11, lineHeight: 1.45, color: "var(--text-sub)" },
+  refDesc: {
+    fontSize: 11,
+    lineHeight: 1.45,
+    color: "var(--text-sub)",
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+  },
 
-  auditPanelLight: {
+  summaryPanelLight: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: "var(--radius-card)",
-    padding: 14,
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-    gap: 12,
+    padding: "4px 16px",
     boxShadow: "var(--shadow-card)",
   },
-  auditPanelDark: {
+  summaryPanelDark: {
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: 4,
-    padding: 14,
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-    gap: 12,
+    padding: "4px 14px",
   },
+  dim: { color: "var(--dim)" },
   auditStat: {
     display: "flex", flexDirection: "column", gap: 3,
   },
@@ -629,24 +756,33 @@ const S = {
     width: "100%",
   },
   transcriptBoxLight: {
-    fontSize: 13, lineHeight: 1.6,
-    color: "var(--text)",
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: "var(--radius-card)",
-    padding: 16,
+    padding: "8px 22px 16px",
     marginTop: 10,
-    whiteSpace: "pre-wrap",
+    boxShadow: "var(--shadow-card)",
   },
   transcriptBoxDark: {
-    fontFamily: "var(--font-mono)",
-    fontSize: 12, lineHeight: 1.6,
-    color: "var(--text)",
     background: "var(--surface)",
     border: "1px solid var(--border)",
     borderRadius: 4,
-    padding: 14,
+    padding: "8px 18px 14px",
     marginTop: 10,
-    whiteSpace: "pre-wrap",
+  },
+  transcriptSceneHead: {
+    fontFamily: "var(--font-mono)",
+    fontSize: 10,
+    color: "var(--green)",
+    textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    marginTop: 18,
+    marginBottom: 6,
+  },
+  transcriptBeat: {
+    fontSize: 14,
+    lineHeight: 1.7,
+    color: "var(--text)",
+    margin: "6px 0",
   },
 };

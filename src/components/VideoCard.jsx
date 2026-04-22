@@ -52,10 +52,10 @@ export default function VideoCard({ video }) {
       onClick={go}
     >
       <div style={previewStyle}>
-        {video.video?.thumbnailUrl ? (
+        {video.thumbnailUrl ? (
           <>
             <img
-              src={video.video.thumbnailUrl}
+              src={video.thumbnailUrl}
               alt=""
               style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
               loading="lazy"

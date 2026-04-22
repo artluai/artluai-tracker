@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "../lib/theme";
 import VideoCard, { VideoCardBlank } from "./VideoCard";
-import { videoBundles } from "../lib/video-mock-data";
 
 const MAX_ROWS = 2;
 
@@ -19,6 +18,14 @@ export default function VideoShowcase() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const width = useWidth();
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    fetch("/videos/index.json")
+      .then(r => (r.ok ? r.json() : []))
+      .then(setVideos)
+      .catch(() => setVideos([]));
+  }, []);
 
   // Responsive columns: 4 (>=1100), 3 (>=820), 2 (>=540), 1 (mobile)
   let cols = 4;
@@ -29,11 +36,13 @@ export default function VideoShowcase() {
   // Grow rows as videos ship, up to MAX_ROWS on multi-column layouts.
   // Mobile (1 col) stacks all shipped videos — row cap doesn't apply.
   const rowCap = cols > 1 ? MAX_ROWS : Infinity;
-  const rowsNeeded = Math.max(1, Math.ceil(videoBundles.length / cols));
+  const rowsNeeded = Math.max(1, Math.ceil(videos.length / cols));
   const rows = Math.min(rowsNeeded, rowCap);
   const slots = rows * cols;
-  const videos = videoBundles.slice(0, slots);
-  const blanks = cols > 1 ? Math.max(0, slots - videos.length) : 0;
+  const shown = videos.slice(0, slots);
+  const blanks = cols > 1 ? Math.max(0, slots - shown.length) : 0;
+
+  if (videos.length === 0) return null;
 
   return (
     <div style={S.section}>
@@ -54,7 +63,7 @@ export default function VideoShowcase() {
         {" "}— takes anything (chats, notes, rough ideas) and turns it into a video, script and all.
       </div>
       <div style={{ ...S.grid, gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
-        {videos.map(v => <VideoCard key={v.id} video={v} />)}
+        {shown.map(v => <VideoCard key={v.id} video={v} />)}
         {Array.from({ length: blanks }).map((_, i) => <VideoCardBlank key={`blank-${i}`} />)}
       </div>
     </div>

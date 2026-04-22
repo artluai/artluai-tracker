@@ -1,0 +1,23 @@
+[
+  {
+    "id": "spoolcast-dev-log",
+    "title": "Building with AI: how I stopped my AI from silently breaking rules",
+    "shippedAt": "2026-04-21",
+    "durationSec": 252,
+    "thumbnailUrl": "https://img.youtube.com/vi/i3Z480n1k6k/maxresdefault.jpg"
+  },
+  {
+    "id": "spoolcast-explainer",
+    "title": "I don't make videos. My AI pipeline does.",
+    "shippedAt": "2026-04-15",
+    "durationSec": 480,
+    "thumbnailUrl": "https://img.youtube.com/vi/7p43_3gHJj0/maxresdefault.jpg"
+  },
+  {
+    "id": "tribe-session-001",
+    "title": "Meta TRIBE explainer (pilot)",
+    "shippedAt": "2026-03-25",
+    "durationSec": 300,
+    "thumbnailUrl": "https://img.youtube.com/vi/hqbmHuEtayM/maxresdefault.jpg"
+  }
+]
