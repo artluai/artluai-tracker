@@ -1,5 +1,12 @@
 [
   {
+    "id": "spoolcast-dev-log-02",
+    "title": "how I caught AI lying — spoolcast dev log 2",
+    "shippedAt": "2026-04-24",
+    "durationSec": 199,
+    "thumbnailUrl": "https://img.youtube.com/vi/-tvxNxfTnDc/maxresdefault.jpg"
+  },
+  {
     "id": "spoolcast-dev-log",
     "title": "Building with AI: how I stopped my AI from silently breaking rules",
     "shippedAt": "2026-04-21",
