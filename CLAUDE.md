@@ -263,6 +263,26 @@ Two themes share the same DOM. Switched via `html[data-theme="light|dark"]`. Def
 - Admin sees "○ private" label on hidden entries
 - Future fields reserved: screenshots[], videoStatus, videoUrl, seriesId (for AI video pipeline)
 
+## Video Showcase
+- Homepage section `video showcase` sits above the renamed `demo showcase`. 4-col grid, responsive down to 1-col on mobile. Grows by row as more videos ship, capped at 2 rows.
+- Card thumbnails use 16:9 (desktop) / 9:16 (mobile) YouTube thumbnails. Click → `/video/:id` guidebook page.
+- Guidebook page: YouTube embed, core message, style library (anchor + refs with hover-full-prompt), summary row (writing · images · audio · render · narration audit), every chunk with scene image + narration beats + prompt + audit badges, structured transcript.
+- Route: `/video/:id` — requires SPA redirect in `netlify.toml` (`/video/*` → `/index.html` status 200).
+- Frontend reads `/videos/index.json` (card list) + `/videos/<id>/bundle.json` (guidebook). Both are static files under `public/videos/`.
+
+### Shipping a new video
+1. Add entry to `scripts/shipped-videos.json` — `{ id, title, youtubeId, shippedAt, durationSec, hiddenChunkIds, notes }`. The `id` must match a directory name under `../spoolcast-content/sessions/`.
+2. Run `node scripts/sync-video.mjs <session-id>` — reads the session folder, copies assets as webp into `public/videos/<id>/assets/`, writes bundle.json, rebuilds `public/videos/index.json`.
+3. Commit and push. Netlify deploys.
+
+### Requirements
+- Sibling `../spoolcast-content/` checkout (sessions, styles)
+- `cwebp` for image downscale — `brew install webp`. ffmpeg's default brew build does NOT include libwebp.
+- Node 22.
+
+### Bundle shape
+Deliberately "database-shaped" — no filesystem paths, only public URLs, so a future spoolcast DB can emit the same contract without changing the frontend. Keys: `id, title, shippedAt, durationSec, coreMessage, video{youtubeId,thumbnailUrl,mp4Url}, style{name,anchorImageUrl,references[]}, chunks[], transcript, summary{writing,images,audio,render,audit}, showcase{hiddenChunkIds}`.
+
 ## Header / Navigation
 - "artlu.ai" + blinking cursor on the left
 - Right side buttons: journal, dashboard/public view toggle, auth
@@ -282,6 +302,7 @@ Two themes share the same DOM. Switched via `html[data-theme="light|dark"]`. Def
 - Day 1 start date: 2026-03-18
 - SPA redirect required in netlify.toml: /* → /index.html (status 200)
 - Additional redirect: /project/* → /index.html (status 200) for project permalinks
+- Additional redirect: /video/* → /index.html (status 200) for video guidebook pages
 
 ## Firestore Project Schema
 ```json
