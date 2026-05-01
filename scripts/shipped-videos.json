@@ -1,5 +1,32 @@
 [
   {
+    "id": "news-anime-bot-2026-04-30",
+    "format": "short",
+    "show": "news-anime-bot",
+    "sessionDate": "2026-04-30",
+    "title": "Microsoft to spend $120B on AI this year, used by 3% of customers",
+    "desc": "Daily AI-generated tech news satire. Microsoft Q3 earnings + Copilot adoption.",
+    "youtubeId": "uBfr45P2aOM",
+    "tiktokUrl": "https://www.tiktok.com/@artlu.ai/video/7634647531091234078",
+    "shippedAt": "2026-04-30",
+    "durationSec": 62,
+    "hiddenBeatNs": [],
+    "notes": "Episode 2 of news-anime-bot."
+  },
+  {
+    "id": "news-anime-bot-2026-04-29",
+    "format": "short",
+    "show": "news-anime-bot",
+    "sessionDate": "2026-04-29",
+    "title": "OpenAI's $600B compute commitments and the $700B AI bill",
+    "desc": "Pilot episode of the daily AI news satire show. OpenAI Q1 + hyperscaler capex.",
+    "youtubeId": "_umRCKLUG8k",
+    "shippedAt": "2026-04-29",
+    "durationSec": 60,
+    "hiddenBeatNs": [],
+    "notes": "Pilot episode — predates the structured script.md format, so beats / sources / transcript are not in the bundle."
+  },
+  {
     "id": "spoolcast-dev-log-03",
     "title": "how AI hides its own mistakes — spoolcast dev log 3",
     "youtubeId": "yozYCL3qOBs",

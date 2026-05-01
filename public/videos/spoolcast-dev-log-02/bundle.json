@@ -1,6 +1,8 @@
 {
   "id": "spoolcast-dev-log-02",
+  "format": "long",
   "title": "how I caught AI lying — spoolcast dev log 2",
+  "desc": "",
   "shippedAt": "2026-04-24",
   "durationSec": 199,
   "coreMessage": "",
@@ -376,8 +378,8 @@
       "summary": "'exact same inputs' means both",
       "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/scenes/C14.webp",
       "imageSource": "generated",
-      "model": null,
-      "prompt": "The prompt + reference pair from prior chunk. A hand draws a circle around both cards together, binding them. Below the circle, the word 'BOTH' in hand-lettered caps.",
+      "model": "gpt-image-2-text-to-image",
+      "prompt": "Flat-shaded cartoon illustration in the modern wojak-comic style. Characters drawn with exaggerated archetypal features — weary/defeated faces (hollow eyes, gray tones, slouched posture) vs. confident/heroic faces (jawline, cheekbones, steady gaze) depending on the scene. Subtle soft cel-shading, not bold inked outlines. Muted color palette with deliberate contrast between desolate and triumphant scenes. Detailed background environments — offices, dungeons, desks, monitors, paperwork, props render with texture. Dialog bubbles rendered in-frame when characters speak. Reminiscent of Nick Col / virgin-vs-chad meme-comics but painted with care. Composition is comic-strip: one clear subject, readable at small sizes. Scene: This scene is being regenerated for a 9:16 portrait mobile video. Compose everything for a tall vertical canvas — the widescreen original won't survive a mobile center-crop, so rebuild the scene to fit the portrait frame naturally. If the visual direction below describes a horizontal layout (side-by-side panels, left/right positioning, split-frame), restructure it as a vertical arrangement (stacked panels, top/bottom positioning, upper-half / lower-half). Keep all declared on_screen_text legible inside the portrait canvas. Existing style anchor applies unchanged. Render exactly this text on the frame, hand-lettered in the session style: \"BOTH\".",
       "beats": [
         {
           "id": "14A",
@@ -470,8 +472,8 @@
       "order": 19,
       "sceneTitle": "Act 2 — THE BROKEN SHOTS",
       "summary": "first answer didn't add up",
-      "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/external/meme-surprised-pikachu.webp",
-      "imageSource": "broll_image",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/scenes/C18.webp",
+      "imageSource": "generated",
       "model": null,
       "prompt": "Close-up on the laptop screen on the desk. A reply speech-bubble contains typing dots. The stick figure's hand rests on the laptop, waiting.",
       "beats": [
@@ -563,8 +565,8 @@
       "summary": "call out — some version of lying",
       "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/scenes/C21.webp",
       "imageSource": "generated",
-      "model": null,
-      "prompt": "Same framing. The words 'some version of lying' fill the frame. A hand-drawn red circle is drawn around the word 'lying.'",
+      "model": "gpt-image-2-text-to-image",
+      "prompt": "Flat-shaded cartoon illustration in the modern wojak-comic style. Characters drawn with exaggerated archetypal features — weary/defeated faces (hollow eyes, gray tones, slouched posture) vs. confident/heroic faces (jawline, cheekbones, steady gaze) depending on the scene. Subtle soft cel-shading, not bold inked outlines. Muted color palette with deliberate contrast between desolate and triumphant scenes. Detailed background environments — offices, dungeons, desks, monitors, paperwork, props render with texture. Dialog bubbles rendered in-frame when characters speak. Reminiscent of Nick Col / virgin-vs-chad meme-comics but painted with care. Composition is comic-strip: one clear subject, readable at small sizes. Scene: This scene is being regenerated for a 9:16 portrait mobile video. Compose everything for a tall vertical canvas — the widescreen original won't survive a mobile center-crop, so rebuild the scene to fit the portrait frame naturally. If the visual direction below describes a horizontal layout (side-by-side panels, left/right positioning, split-frame), restructure it as a vertical arrangement (stacked panels, top/bottom positioning, upper-half / lower-half). Keep all declared on_screen_text legible inside the portrait canvas. Existing style anchor applies unchanged. Render exactly this text on the frame, hand-lettered in the session style: \"some version of lying\".",
       "beats": [
         {
           "id": "21A",
@@ -635,8 +637,8 @@
       "order": 26,
       "sceneTitle": "Act 3 — THE PUSH",
       "summary": "the dumb part — setup",
-      "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/external/meme-picard-facepalm.webp",
-      "imageSource": "broll_image",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/scenes/C24.webp",
+      "imageSource": "generated",
       "model": "gpt-image-2-text-to-image",
       "prompt": "Flat-shaded cartoon illustration in the modern wojak-comic style. Characters drawn with exaggerated archetypal features — weary/defeated faces (hollow eyes, gray tones, slouched posture) vs. confident/heroic faces (jawline, cheekbones, steady gaze) depending on the scene. Subtle soft cel-shading, not bold inked outlines. Muted color palette with deliberate contrast between desolate and triumphant scenes. Detailed background environments — offices, dungeons, desks, monitors, paperwork, props render with texture. Dialog bubbles rendered in-frame when characters speak. Reminiscent of Nick Col / virgin-vs-chad meme-comics but painted with care. Composition is comic-strip: one clear subject, readable at small sizes. Scene: A SINGLE comic panel (NOT a split panel, NOT a multi-panel comic, NOT a before-and-after, NOT a 4-panel layout). One unified scene. The narrator (weary hooded doomer wojak — gray hoodie) at a desk, holding two pieces of paper / printouts up side by side, eyes scanning between them with a slow-dawning realization expression. The two papers visibly contain similar-looking content but with one subtle highlighted difference (a red circle around something on the right paper). NO chad. Retrospective realization mood — quiet, not punchy.",
       "beats": [
@@ -685,8 +687,8 @@
       "summary": "why — AI checked memory of code",
       "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/scenes/C26.webp",
       "imageSource": "generated",
-      "model": null,
-      "prompt": "A cloud-outline shape floats on the left of the frame. Inside the cloud, handwritten text reads 'what I think the code does.' The AI stick figure touches the cloud with one hand.",
+      "model": "gpt-image-2-image-to-image",
+      "prompt": "Flat-shaded cartoon illustration in the modern wojak-comic style. Characters drawn with exaggerated archetypal features — weary/defeated faces (hollow eyes, gray tones, slouched posture) vs. confident/heroic faces (jawline, cheekbones, steady gaze) depending on the scene. Subtle soft cel-shading, not bold inked outlines. Muted color palette with deliberate contrast between desolate and triumphant scenes. Detailed background environments — offices, dungeons, desks, monitors, paperwork, props render with texture. Dialog bubbles rendered in-frame when characters speak. Reminiscent of Nick Col / virgin-vs-chad meme-comics but painted with care. Composition is comic-strip: one clear subject, readable at small sizes. Scene: This scene is being regenerated for a 9:16 portrait mobile video. Compose everything for a tall vertical canvas — the widescreen original won't survive a mobile center-crop, so rebuild the scene to fit the portrait frame naturally. If the visual direction below describes a horizontal layout (side-by-side panels, left/right positioning, split-frame), restructure it as a vertical arrangement (stacked panels, top/bottom positioning, upper-half / lower-half). Keep all declared on_screen_text legible inside the portrait canvas. Existing style anchor applies unchanged. Render exactly this text on the frame, hand-lettered in the session style: \"what I think the code does\".",
       "beats": [
         {
           "id": "26A",
@@ -710,8 +712,8 @@
       "summary": "not what the code actually sent",
       "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/scenes/C27.webp",
       "imageSource": "generated",
-      "model": null,
-      "prompt": "Same scene. Now a rectangular box appears to the right of the cloud. Inside the box, handwritten text: 'what the code actually sent.' The AI figure is not touching the box. The box sits untouched.",
+      "model": "gpt-image-2-text-to-image",
+      "prompt": "Flat-shaded cartoon illustration in the modern wojak-comic style. Characters drawn with exaggerated archetypal features — weary/defeated faces (hollow eyes, gray tones, slouched posture) vs. confident/heroic faces (jawline, cheekbones, steady gaze) depending on the scene. Subtle soft cel-shading, not bold inked outlines. Muted color palette with deliberate contrast between desolate and triumphant scenes. Detailed background environments — offices, dungeons, desks, monitors, paperwork, props render with texture. Dialog bubbles rendered in-frame when characters speak. Reminiscent of Nick Col / virgin-vs-chad meme-comics but painted with care. Composition is comic-strip: one clear subject, readable at small sizes. Scene: This scene is being regenerated for a 9:16 portrait mobile video. Compose everything for a tall vertical canvas — the widescreen original won't survive a mobile center-crop, so rebuild the scene to fit the portrait frame naturally. If the visual direction below describes a horizontal layout (side-by-side panels, left/right positioning, split-frame), restructure it as a vertical arrangement (stacked panels, top/bottom positioning, upper-half / lower-half). Keep all declared on_screen_text legible inside the portrait canvas. Existing style anchor applies unchanged. Render exactly this text on the frame, hand-lettered in the session style: \"what the code actually sent\".",
       "beats": [
         {
           "id": "27A",
@@ -907,8 +909,8 @@
       "summary": "core message — line 3, held",
       "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/scenes/C35.webp",
       "imageSource": "generated",
-      "model": null,
-      "prompt": "Same page, third line now drawn below the first two: 'And it can't tell the difference.' All three lines full-frame, handwritten, wojak-comic. Held for a full breath.",
+      "model": "gpt-image-2-text-to-image",
+      "prompt": "Flat-shaded cartoon illustration in the modern wojak-comic style. Characters drawn with exaggerated archetypal features — weary/defeated faces (hollow eyes, gray tones, slouched posture) vs. confident/heroic faces (jawline, cheekbones, steady gaze) depending on the scene. Subtle soft cel-shading, not bold inked outlines. Muted color palette with deliberate contrast between desolate and triumphant scenes. Detailed background environments — offices, dungeons, desks, monitors, paperwork, props render with texture. Dialog bubbles rendered in-frame when characters speak. Reminiscent of Nick Col / virgin-vs-chad meme-comics but painted with care. Composition is comic-strip: one clear subject, readable at small sizes. Scene: This scene is being regenerated for a 9:16 portrait mobile video. Compose everything for a tall vertical canvas — the widescreen original won't survive a mobile center-crop, so rebuild the scene to fit the portrait frame naturally. If the visual direction below describes a horizontal layout (side-by-side panels, left/right positioning, split-frame), restructure it as a vertical arrangement (stacked panels, top/bottom positioning, upper-half / lower-half). Keep all declared on_screen_text legible inside the portrait canvas. Existing style anchor applies unchanged. Render exactly this text on the frame, hand-lettered in the session style: \"AI doesn't remember what you said.\" | \"It remembers what you meant.\" | \"And it can't tell the difference.\".",
       "beats": [
         {
           "id": "35A",
@@ -1021,8 +1023,8 @@
       "order": 42,
       "sceneTitle": "Act 4 — THE FIX",
       "summary": "replay — don't describe, don't paraphrase",
-      "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/external/meme-mr-krabs-blur.webp",
-      "imageSource": "broll_image",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-02/assets/scenes/C39.webp",
+      "imageSource": "generated",
       "model": null,
       "prompt": "Stick figure in frame shakes head. Two greyed-out speech bubbles appear beside their mouth — both struck through with a diagonal line.",
       "beats": [
@@ -1225,7 +1227,7 @@
         "gpt-image-2-image-to-image",
         "gpt-image-2-text-to-image"
       ],
-      "sceneCount": 19
+      "sceneCount": 28
     },
     "audio": {
       "tts": "Google Cloud TTS",

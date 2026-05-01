@@ -1,6 +1,8 @@
 {
   "id": "spoolcast-explainer",
+  "format": "long",
   "title": "I don't make videos. My AI pipeline does.",
+  "desc": "",
   "shippedAt": "2026-04-15",
   "durationSec": 480,
   "coreMessage": "",

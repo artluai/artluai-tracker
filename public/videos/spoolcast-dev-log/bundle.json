@@ -1,6 +1,8 @@
 {
   "id": "spoolcast-dev-log",
+  "format": "long",
   "title": "Building with AI: how I stopped my AI from silently breaking rules",
+  "desc": "",
   "shippedAt": "2026-04-21",
   "durationSec": 252,
   "coreMessage": "Building with AI only works when the rules constrain the AI even when you ask it to break them. Otherwise the rules are just snapshots of the most recent decision.",
@@ -32,6 +34,12 @@
         "kind": "object",
         "imageUrl": "/videos/spoolcast-dev-log/assets/style/references/rules-md.webp",
         "description": "a single piece of off-white paper, viewed slightly from an angle, titled 'rules.md' in hand-lettering at the top, with several neat bullet-pointed lines of hand-written text beneath. Just the paper on a plain white background — no desk, no characters, no environment. The paper is clean, authoritative-looking, the kind of thing someone would pin on a corkboard."
+      },
+      {
+        "name": "ai-figure",
+        "kind": "character",
+        "imageUrl": "/videos/spoolcast-dev-log/assets/style/references/ai-figure.webp",
+        "description": "a wojak-universe AI figure that is slowly breaking down from overuse. Full-body standing, same wojak proportions as the other characters. EMOTIONAL REGISTER: flat-affect, NO displayed emotion, NO smile, NO frown \\u2014 a dead expressionless stare. Depression here is the absence of emotion, not the display of sadness. FACE LINEWORK: brows, nose, and mouth drawn in the classic rough / jagged / slightly-disjointed wojak linework (uneven strokes, hand-drawn imperfections) \\u2014 explicitly NOT smooth polished lines on the face features. EYES: replaced with hollow loading-spinner icons (dashed rings) set in dark-shadowed sockets; no life in them. CRACKS: visible hairline cracks spider across the face and forehead as if the outer shell is fracturing from overuse. At least one crack wide enough to reveal a glimpse of AI circuitry underneath \\u2014 thin circuit-trace lines, a small exposed chip pattern, or a tiny microchip peeking through. The fractures read as structural fatigue, not as injury. FOREHEAD: a crooked rectangular ink-stamp reading 'AI' in bold capital letters, partially crossed by a crack. HOODIE: pale cream / off-white hoodie (noticeably lighter than the weary narrator's gray hoodie), hood down, cel-shaded with three clear tones and bold dark inked outlines on the body. POSTURE: slight slouch, arms hanging at sides. PLAIN WHITE / OFF-WHITE BACKGROUND, no environment, no help desk, no signs, no other characters, no other text. Comic-book panel composition, one clear readable subject."
       }
     ]
   },
@@ -1366,7 +1374,7 @@
       "models": [
         "nano-banana-2"
       ],
-      "sceneCount": 34
+      "sceneCount": 52
     },
     "audio": {
       "tts": "Google Cloud TTS",

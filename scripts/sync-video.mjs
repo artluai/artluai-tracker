@@ -12,9 +12,10 @@
 // The bundle shape is the "database-shaped" contract — it has no filesystem
 // paths, only public URLs. A future DB-backed emitter produces the same shape.
 
-import { readFile, writeFile, mkdir, copyFile, readdir, access } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, readdir, access, unlink } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { spawn } from "node:child_process";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -50,6 +51,159 @@ async function importAsset(srcPath, destDir, baseName) {
   return destName;
 }
 
+// Extract a single frame from an mp4 as a downscaled webp. ffmpeg in this
+// brew build doesn't include libwebp, so we extract a PNG into the OS tmp
+// dir then run cwebp on it.
+async function extractFirstFrameAsWebp(mp4Path, destWebp, width = THUMB_WIDTH, quality = THUMB_QUALITY) {
+  const tmpPng = path.join(tmpdir(), `frame-${Date.now()}-${Math.random().toString(36).slice(2)}.png`);
+  await new Promise((resolve, reject) => {
+    const ff = spawn("ffmpeg", [
+      "-y", "-loglevel", "error",
+      "-ss", "0.5",
+      "-i", mp4Path,
+      "-vframes", "1",
+      "-q:v", "2",
+      tmpPng,
+    ], { stdio: ["ignore", "ignore", "pipe"] });
+    let stderr = "";
+    ff.stderr.on("data", d => { stderr += d; });
+    ff.on("close", code => code === 0 ? resolve() : reject(new Error(`ffmpeg ${code}: ${stderr.slice(-400)}`)));
+    ff.on("error", reject);
+  });
+  try {
+    await ensureDir(path.dirname(destWebp));
+    await downscaleToWebp(tmpPng, destWebp, width, quality);
+  } finally {
+    try { await unlink(tmpPng); } catch {}
+  }
+}
+
+// Extract a TikTok video ID from any common URL shape:
+//   https://www.tiktok.com/@user/video/1234567890123456789
+//   https://vm.tiktok.com/SHORTCODE/   (returns null — short links need expansion)
+// Returns the long numeric ID or null if not parseable.
+function parseTiktokId(url) {
+  if (!url) return null;
+  const m = String(url).match(/\/video\/(\d{6,})/);
+  return m ? m[1] : null;
+}
+
+// Parse the news-anime-bot show's `script.md` file into structured data.
+// Best-effort regex parse — the script format is human-edited so we skip
+// fields gracefully when they're missing.
+function parseShortScriptMd(content) {
+  const titleMatch = content.match(/\*\*Title:\*\*\s*(.+)/);
+  const title = titleMatch ? titleMatch[1].trim() : "";
+
+  const topicMatch = content.match(/Topic tier[^\n]*?(GREEN|YELLOW|RED|BLUE)/i);
+  const topicTier = topicMatch ? topicMatch[1].toUpperCase() : null;
+
+  // Pre-roll voice tag (the burned text is canonical, voice tag varies)
+  let preRoll = null;
+  const preRollMatch = content.match(/##\s*Pre-roll[\s\S]*?(?=\n##\s|$)/);
+  if (preRollMatch) {
+    const block = preRollMatch[0];
+    const voiceMatch = block.match(/voice tag[\s\S]*?"([^"]+)"/i);
+    preRoll = {
+      burnedText: "⚠ SATIRE — AI-GENERATED PARODY — NOT REAL",
+      voiceTag: voiceMatch ? voiceMatch[1] : "FAUX7 News. Satire.",
+    };
+  }
+
+  // Beat table: "| # | Name | Dur | Char | Source chyron |"
+  const beatTable = [];
+  const tableMatch = content.match(/\|\s*#\s*\|\s*Name[\s\S]+?(?=\n\n|\n##\s)/);
+  if (tableMatch) {
+    const lines = tableMatch[0].split("\n").filter(l => l.trim().startsWith("|"));
+    for (const line of lines.slice(2)) { // skip header + separator
+      const cells = line.split("|").slice(1, -1).map(c => c.trim());
+      if (cells.length < 4) continue;
+      const n = parseInt(cells[0]);
+      if (!Number.isFinite(n)) continue;
+      const name = cells[1].replace(/\s*✓\s*$/, "");
+      const durMatch = cells[2].match(/(\d+)/);
+      const character = (!cells[3] || cells[3] === "—") ? null : cells[3];
+      const sourceChyron = (!cells[4] || cells[4] === "—") ? null : cells[4].replace(/^`|`$/g, "");
+      beatTable.push({ n, name, durationSec: durMatch ? parseInt(durMatch[1]) : null, character, sourceChyron });
+    }
+  }
+
+  // Narration block: numbered lines inside a code fence under "## Narration"
+  const narrationByN = new Map();
+  const narrationMatch = content.match(/##\s*Narration[\s\S]*?```([\s\S]+?)```/);
+  if (narrationMatch) {
+    const block = narrationMatch[1];
+    const lineRegex = /^\s*(\d+)\.\s+(.*?)$/gm;
+    let m;
+    while ((m = lineRegex.exec(block)) !== null) {
+      const n = parseInt(m[1]);
+      let text = m[2].trim();
+      // Strip SSML for the transcript field
+      text = text.replace(/<\/?speak>/g, "").replace(/<break[^>]*\/>/g, "").replace(/\s+/g, " ").trim();
+      narrationByN.set(n, text);
+    }
+  }
+
+  // Cinematography table — optional, "## Tier 1 cinematography"
+  const cinemaByN = new Map();
+  const cinemaMatch = content.match(/##\s*Tier 1 cinematography[\s\S]*?\|\s*Beat\s*\|\s*Effect\s*\|[\s\S]+?(?=\n\n|\n##\s)/);
+  if (cinemaMatch) {
+    const lines = cinemaMatch[0].split("\n").filter(l => l.trim().startsWith("|"));
+    for (const line of lines.slice(2)) {
+      const cells = line.split("|").slice(1, -1).map(c => c.trim());
+      if (cells.length < 2) continue;
+      const n = parseInt(cells[0]);
+      if (Number.isFinite(n)) cinemaByN.set(n, cells[1]);
+    }
+  }
+
+  // Sources — bullet list under "## Sources …". Optional URL anywhere in the
+  // line (typically trailing): pulled out into its own field so the page can
+  // render the attribution as a link.
+  const sources = [];
+  const sourcesMatch = content.match(/##\s*Sources[\s\S]*$/);
+  if (sourcesMatch) {
+    const block = sourcesMatch[0];
+    const bullet = /^-\s+([^:\n]+):\s*(.+)$/gm;
+    let m;
+    while ((m = bullet.exec(block)) !== null) {
+      const fact = m[1].trim();
+      let rest = m[2].trim();
+      const urlMatch = rest.match(/(https?:\/\/\S+)/);
+      const url = urlMatch ? urlMatch[1].replace(/[).,;]+$/, "") : null;
+      // Strip the URL (and any trailing em-dash/hyphen separator) from the visible attribution.
+      const attribution = url
+        ? rest.replace(url, "").replace(/[\s—–\-]+$/, "").trim()
+        : rest;
+      sources.push({ fact, attribution, url });
+    }
+  }
+
+  // Cost — "Total [X]: ~$Y" or "Ep N total: ~$Y"
+  const costMatch = content.match(/(?:Total[^\n]*|Ep\s*\d+\s*total)[^\n]*?\$\s*([\d.,]+)/i);
+  const totalCost = costMatch ? `~$${costMatch[1]}` : null;
+
+  // TTS voice
+  let ttsVoice = null;
+  const voiceMatch = content.match(/(?:Schedar|Puck|Charon|Algieba)\s*voice|en-US-Chirp3-HD-(\w+)/i);
+  if (voiceMatch) ttsVoice = voiceMatch[1] || voiceMatch[0].split(" ")[0];
+
+  // Video model (Seedance / Kling / etc.) — pick first hit
+  let videoModel = null;
+  const seedanceMatch = content.match(/Seedance\s*[\d.]+\s*(?:\w+)?/i);
+  const klingMatch = content.match(/Kling\s*[\d.]+/i);
+  if (seedanceMatch) videoModel = seedanceMatch[0];
+  else if (klingMatch) videoModel = klingMatch[0];
+
+  const beats = beatTable.map(b => ({
+    ...b,
+    narration: narrationByN.get(b.n) || "",
+    cinematography: cinemaByN.get(b.n) || null,
+  }));
+
+  return { title, topicTier, preRoll, beats, sources, totalCost, ttsVoice, videoModel };
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");                       // artluai-tracker/
 const CONTENT = path.resolve(ROOT, "..", "spoolcast-content");    // sibling
@@ -72,7 +226,15 @@ function log(label, msg) { console.log(`  [${label}] ${msg}`); }
 function warn(label, msg) { console.warn(`  ⚠  [${label}] ${msg}`); }
 
 // ── bundle assembly ────────────────────────────────────────────────────────
+// Dispatcher — picks long vs short builder based on the manifest entry's
+// `format` field (defaults to "long" for backwards compat).
 async function buildBundle(shipped) {
+  const format = shipped.format || "long";
+  if (format === "short") return buildShortBundle(shipped);
+  return buildLongBundle(shipped);
+}
+
+async function buildLongBundle(shipped) {
   const id = shipped.id;
   const sessionDir = path.join(CONTENT, "sessions", id);
   const outDir = path.join(PUBLIC_VIDEOS, id);
@@ -297,7 +459,9 @@ async function buildBundle(shipped) {
   // ── bundle ─────────────────────────────────────────────────────────────
   const bundle = {
     id,
+    format: "long",
     title: shipped.title,
+    desc: shipped.desc || "",
     shippedAt: shipped.shippedAt,
     durationSec: shipped.durationSec,
     coreMessage: session.core_message || shipped.coreMessage || "",
@@ -319,7 +483,179 @@ async function buildBundle(shipped) {
   };
 
   await writeJson(path.join(outDir, "bundle.json"), bundle);
-  log(id, `wrote bundle.json (${chunks.length} chunks, ${totalBeats} beats)`);
+  log(id, `wrote bundle.json (long, ${chunks.length} chunks, ${totalBeats} beats)`);
+  return bundle;
+}
+
+// ── short builder ──────────────────────────────────────────────────────────
+async function buildShortBundle(shipped) {
+  const id = shipped.id;
+  const show = shipped.show;
+  const date = shipped.sessionDate || shipped.shippedAt; // session dir is named YYYY-MM-DD
+  if (!show) {
+    warn(id, `short ship entry missing required "show" field — skipping`);
+    return null;
+  }
+  const sessionRoot = path.join(CONTENT, "shows", show, "sessions", date);
+  const episodeDir = path.join(sessionRoot, "episode");
+  const charactersDir = path.join(sessionRoot, "characters");
+  const outDir = path.join(PUBLIC_VIDEOS, id);
+  const assetsDir = path.join(outDir, "assets");
+
+  if (!existsSync(episodeDir)) {
+    warn(id, `episode dir missing at ${episodeDir} — writing minimal bundle from manifest only`);
+  }
+
+  await ensureDir(outDir);
+  await ensureDir(assetsDir);
+
+  // Parse script.md if present (ep 1 has none, ep 2+ should).
+  let scriptText = "";
+  try { scriptText = await readFile(path.join(episodeDir, "script.md"), "utf8"); } catch {}
+  const scriptData = scriptText ? parseShortScriptMd(scriptText) : null;
+
+  // Find the rendered episode mp4 (episode-NN.mp4).
+  let episodeMp4 = null;
+  const epOutDir = path.join(episodeDir, "out");
+  if (existsSync(epOutDir)) {
+    const files = await readdir(epOutDir);
+    const ep = files.find(f => /^episode-\d+\.mp4$/.test(f));
+    if (ep) episodeMp4 = path.join(epOutDir, ep);
+  }
+
+  // Showcase thumbnail: prefer YouTube's vertical Shorts thumbnail (the
+  // creator-curated one at i.ytimg.com/vi/<id>/oardefault.jpg, which is 720×1280
+  // for Shorts). Fall back to extracting the first frame of the rendered mp4
+  // when the video isn't on YouTube yet.
+  let posterUrl = null;
+  if (shipped.youtubeId) {
+    posterUrl = `https://i.ytimg.com/vi/${shipped.youtubeId}/oardefault.jpg`;
+  } else if (episodeMp4) {
+    const posterPath = path.join(assetsDir, "poster.webp");
+    try {
+      await extractFirstFrameAsWebp(episodeMp4, posterPath);
+      posterUrl = `/videos/${id}/assets/poster.webp`;
+      log(id, `extracted poster from ${path.basename(episodeMp4)} (no youtubeId)`);
+    } catch (err) {
+      warn(id, `poster extraction failed: ${err.message}`);
+    }
+  }
+
+  // Per-beat clip thumbnails: extract first frame from each clips/<NN-name>.mp4
+  const beatThumbsDir = path.join(assetsDir, "beats");
+  const beatUrlByName = new Map();
+  const clipsDir = path.join(episodeDir, "clips");
+  if (existsSync(clipsDir)) {
+    const files = await readdir(clipsDir);
+    let count = 0;
+    for (const f of files) {
+      if (!f.endsWith(".mp4")) continue;
+      const baseName = f.replace(/\.mp4$/, "");
+      const beatName = baseName.replace(/^\d+-/, ""); // strip "01-" prefix
+      const dest = path.join(beatThumbsDir, baseName + ".webp");
+      try {
+        await extractFirstFrameAsWebp(path.join(clipsDir, f), dest);
+        beatUrlByName.set(beatName, `/videos/${id}/assets/beats/${baseName}.webp`);
+        count++;
+      } catch { /* skip unreadable clip */ }
+    }
+    if (count > 0) log(id, `extracted ${count} beat clip thumbnail(s)`);
+  }
+
+  // Recurring characters: copy refs as webp.
+  const charsOutDir = path.join(assetsDir, "characters");
+  const characters = [];
+  if (existsSync(charactersDir)) {
+    const files = await readdir(charactersDir);
+    for (const f of files) {
+      if (!RASTER_EXT.test(f)) continue;
+      const charName = f.replace(/\.[^.]+$/, "");
+      const outName = await importAsset(path.join(charactersDir, f), charsOutDir, f);
+      if (outName) {
+        characters.push({
+          name: charName,
+          kind: "character",
+          imageUrl: `/videos/${id}/assets/characters/${outName}`,
+          description: "",
+          usedInBeats: (scriptData?.beats || []).filter(b => b.character === charName).map(b => b.n),
+        });
+      }
+    }
+    if (characters.length > 0) log(id, `imported ${characters.length} character ref(s)`);
+  }
+
+  // Beats: combine script.md table + narration + cinematography + extracted clip frames.
+  const beats = (scriptData?.beats || []).map(b => ({
+    n: b.n,
+    name: b.name,
+    durationSec: b.durationSec || null,
+    narration: b.narration || "",
+    character: b.character || null,
+    sourceChyron: b.sourceChyron || null,
+    cinematography: b.cinematography || null,
+    clipImageUrl: beatUrlByName.get(b.name) || null,
+  }));
+
+  const sources = scriptData?.sources || [];
+  const transcript = beats.map(b => b.narration).filter(Boolean).join(" ");
+
+  const summary = {
+    writing: scriptData ? {
+      author: "Claude",
+      role: "script · beat plan · narration · sources audit",
+    } : null,
+    videoClips: scriptData?.videoModel ? {
+      platform: "kie.ai",
+      models: [scriptData.videoModel],
+      clipCount: beats.length || beatUrlByName.size || null,
+    } : (beats.length || beatUrlByName.size ? {
+      platform: "kie.ai",
+      models: [],
+      clipCount: beats.length || beatUrlByName.size,
+    } : null),
+    audio: scriptData?.ttsVoice ? {
+      tts: "Google Cloud TTS",
+      voice: scriptData.ttsVoice,
+      beatCount: beats.length || null,
+    } : null,
+    render: { engine: "ffmpeg", passed: true },
+    cost: scriptData?.totalCost || null,
+  };
+
+  const bundle = {
+    id,
+    format: "short",
+    show,
+    title: shipped.title || scriptData?.title || "",
+    desc: shipped.desc || "",
+    shippedAt: shipped.shippedAt,
+    durationSec: shipped.durationSec,
+    topicTier: scriptData?.topicTier || null,
+    video: {
+      youtubeId: shipped.youtubeId || null,
+      tiktokId: parseTiktokId(shipped.tiktokUrl) || shipped.tiktokId || null,
+      tiktokUrl: shipped.tiktokUrl || null,
+      mp4Url: shipped.mp4Url || null,
+      thumbnailUrl: posterUrl
+        || (shipped.youtubeId ? `https://img.youtube.com/vi/${shipped.youtubeId}/maxresdefault.jpg` : null),
+    },
+    preRoll: scriptData?.preRoll || {
+      burnedText: "⚠ SATIRE — AI-GENERATED PARODY — NOT REAL",
+      voiceTag: "FAUX7 News. Satire.",
+    },
+    characters,
+    beats,
+    sources,
+    transcript,
+    summary,
+    showcase: {
+      hiddenBeatNs: shipped.hiddenBeatNs || [],
+      notes: shipped.notes || "",
+    },
+  };
+
+  await writeJson(path.join(outDir, "bundle.json"), bundle);
+  log(id, `wrote bundle.json (short, ${beats.length} beats, ${characters.length} char${characters.length === 1 ? "" : "s"})`);
   return bundle;
 }
 
@@ -327,7 +663,10 @@ async function buildBundle(shipped) {
 function indexRowFromBundle(b) {
   return {
     id: b.id,
+    format: b.format || "long",
+    show: b.show || null,
     title: b.title,
+    desc: b.desc || "",
     shippedAt: b.shippedAt,
     durationSec: b.durationSec,
     thumbnailUrl: b.video?.thumbnailUrl || null,

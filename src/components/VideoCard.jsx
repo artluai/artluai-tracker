@@ -32,17 +32,22 @@ export default function VideoCard({ video }) {
   const isMobile = useIsMobile();
   const [hover, setHover] = useState(false);
 
+  const isShort = video.format === "short";
   const go = () => navigate(`/video/${video.id}`);
 
   const shellStyle = {
     ...(isDark ? S.cardDark : S.cardLight),
+    ...(isShort ? S.shellShort : S.shellLong),
     ...(hover ? (isDark ? S.cardHoverDark : S.cardHoverLight) : {}),
   };
 
-  const previewStyle = {
-    ...S.preview,
-    aspectRatio: isMobile ? "9 / 16" : "16 / 9",
-  };
+  // Long card: thumb top (16:9 desktop / 9:16 mobile), body below.
+  // Short card: thumb LEFT (150px × 3:4 — 9:16 source frame cropped at the
+  // bottom via object-position: top), body to the right. Same total card
+  // height as the long card so a row mixing formats stays clean.
+  const previewStyle = isShort
+    ? S.previewShort
+    : { ...S.previewLong, aspectRatio: isMobile ? "9 / 16" : "16 / 9" };
 
   return (
     <div
@@ -57,12 +62,19 @@ export default function VideoCard({ video }) {
             <img
               src={video.thumbnailUrl}
               alt=""
-              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                objectPosition: isShort ? "top" : "center",
+                display: "block",
+              }}
               loading="lazy"
             />
             <div style={S.playOverlay}>
-              <span style={S.playGlyph}>▶</span>
+              <span style={isShort ? S.playGlyphShort : S.playGlyph}>▶</span>
             </div>
+            {isShort && <div style={S.formatBadge}>short</div>}
           </>
         ) : (
           <div style={S.placeholderBox}>
@@ -78,6 +90,9 @@ export default function VideoCard({ video }) {
           <span style={S.metaSep}>·</span>
           <span>{fmtDuration(video.durationSec)}</span>
         </div>
+        {isShort && video.desc && (
+          <div style={S.descCard}>{video.desc}</div>
+        )}
       </div>
     </div>
   );
@@ -88,8 +103,8 @@ export function VideoCardBlank() {
   const isDark = theme === "dark";
   const isMobile = useIsMobile();
   return (
-    <div style={isDark ? S.blankDark : S.blankLight}>
-      <div style={{ ...S.preview, aspectRatio: isMobile ? "9 / 16" : "16 / 9", background: "transparent" }}>
+    <div style={{ ...(isDark ? S.blankDark : S.blankLight), ...S.shellLong }}>
+      <div style={{ ...S.previewLong, aspectRatio: isMobile ? "9 / 16" : "16 / 9", background: "transparent" }}>
         <div style={S.blankInner}>
           <span style={S.blankIcon}>$_</span>
         </div>
@@ -106,7 +121,6 @@ const S = {
     borderRadius: "var(--radius-card)",
     boxShadow: "var(--shadow-card)",
     overflow: "hidden",
-    display: "flex", flexDirection: "column",
     cursor: "pointer",
     transition: "box-shadow 0.15s, transform 0.15s",
   },
@@ -119,7 +133,6 @@ const S = {
     border: "1px solid var(--border)",
     borderRadius: 4,
     overflow: "hidden",
-    display: "flex", flexDirection: "column",
     cursor: "pointer",
     transition: "border-color 0.15s",
   },
@@ -127,12 +140,15 @@ const S = {
     borderColor: "var(--green-border)",
   },
 
+  // Format-specific card axis
+  shellLong: { display: "flex", flexDirection: "column" },
+  shellShort: { display: "flex", flexDirection: "row" },
+
   blankLight: {
     background: "transparent",
     border: "1px dashed var(--border)",
     borderRadius: "var(--radius-card)",
     overflow: "hidden",
-    display: "flex", flexDirection: "column",
     opacity: 0.6,
   },
   blankDark: {
@@ -140,7 +156,6 @@ const S = {
     border: "1px dashed var(--border)",
     borderRadius: 4,
     overflow: "hidden",
-    display: "flex", flexDirection: "column",
     opacity: 0.5,
   },
   blankInner: {
@@ -154,12 +169,23 @@ const S = {
     opacity: 0.5,
   },
 
-  preview: {
+  // Preview slot (long format — top of card, full width)
+  previewLong: {
     background: "var(--surface-2)",
     borderBottom: "1px solid var(--divider)",
     position: "relative",
     overflow: "hidden",
     width: "100%",
+  },
+  // Preview slot (short format — left side, 150 × 3:4 via aspect-ratio)
+  previewShort: {
+    width: 150,
+    aspectRatio: "3 / 4",
+    flexShrink: 0,
+    background: "var(--surface-2)",
+    borderRight: "1px solid var(--divider)",
+    position: "relative",
+    overflow: "hidden",
   },
   placeholderBox: {
     width: "100%", height: "100%",
@@ -173,27 +199,46 @@ const S = {
     opacity: 0.7,
   },
   playOverlay: {
-    position: "absolute",
-    inset: 0,
+    position: "absolute", inset: 0,
     display: "flex", alignItems: "center", justifyContent: "center",
     pointerEvents: "none",
   },
   playGlyph: {
-    fontSize: 22,
-    color: "#fff",
+    fontSize: 22, color: "#fff",
     background: "rgba(0,0,0,0.55)",
     width: 48, height: 48,
     borderRadius: "50%",
     display: "flex", alignItems: "center", justifyContent: "center",
-    paddingLeft: 4, // optical centering for the triangle
-    backdropFilter: "blur(2px)",
-    WebkitBackdropFilter: "blur(2px)",
+    paddingLeft: 4,
+    backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)",
+  },
+  playGlyphShort: {
+    fontSize: 16, color: "#fff",
+    background: "rgba(0,0,0,0.55)",
+    width: 36, height: 36,
+    borderRadius: "50%",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    paddingLeft: 3,
+    backdropFilter: "blur(2px)", WebkitBackdropFilter: "blur(2px)",
+  },
+  formatBadge: {
+    position: "absolute",
+    top: 6, left: 6,
+    fontFamily: "var(--font-mono)",
+    fontSize: 9, fontWeight: 600,
+    color: "#fff",
+    background: "rgba(0,0,0,0.55)",
+    padding: "2px 6px",
+    borderRadius: 3,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase",
   },
 
   body: {
     padding: "12px 14px 14px",
     display: "flex", flexDirection: "column", gap: 4,
     flex: 1,
+    minWidth: 0,
   },
   titleLight: {
     fontFamily: "var(--font)",
@@ -216,4 +261,13 @@ const S = {
     marginTop: 2,
   },
   metaSep: { color: "var(--dim)" },
+  descCard: {
+    fontSize: 11, lineHeight: 1.4,
+    color: "var(--text-sub)",
+    marginTop: 6,
+    display: "-webkit-box",
+    WebkitLineClamp: 5,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
+  },
 };

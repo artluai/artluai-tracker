@@ -270,18 +270,29 @@ Two themes share the same DOM. Switched via `html[data-theme="light|dark"]`. Def
 - Route: `/video/:id` — requires SPA redirect in `netlify.toml` (`/video/*` → `/index.html` status 200).
 - Frontend reads `/videos/index.json` (card list) + `/videos/<id>/bundle.json` (guidebook). Both are static files under `public/videos/`.
 
+### Two formats: long and short
+- `format: "long"` (default) — widescreen 16:9 longform from spoolcast `sessions/<id>/`. Card thumb is 16:9 on top. Detail page is single-column with chunks/style library/audit summary.
+- `format: "short"` — vertical 9:16 from `shows/<show>/sessions/<date>/episode/`. Card thumb is 150px×3:4 on the left of the body (the 9:16 source frame is cropped at the bottom via `object-position: top`). Detail page is 2-col: sticky 9:16 video on the left (capped at `min(100vh - 290px, 676px)` so the full frame fits above the fold), beats grid + summary + characters + sources + transcript on the right. Pre-roll disclosure goes at the bottom of the right column.
+
 ### Shipping a new video
-1. Add entry to `scripts/shipped-videos.json` — `{ id, title, youtubeId, shippedAt, durationSec, hiddenChunkIds, notes }`. The `id` must match a directory name under `../spoolcast-content/sessions/`.
-2. Run `node scripts/sync-video.mjs <session-id>` — reads the session folder, copies assets as webp into `public/videos/<id>/assets/`, writes bundle.json, rebuilds `public/videos/index.json`.
+1. Add entry to `scripts/shipped-videos.json`. Long: `{ id, title, youtubeId, shippedAt, durationSec, hiddenChunkIds, notes }` — `id` matches a dir under `../spoolcast-content/sessions/`. Short: `{ id, format: "short", show, sessionDate, title, desc, youtubeId, shippedAt, durationSec, hiddenBeatNs, notes }` — `show` + `sessionDate` resolve to `../spoolcast-content/shows/<show>/sessions/<sessionDate>/episode/`.
+2. Run `node scripts/sync-video.mjs <id>` (or no arg to sync all). Long bundles read session/shot-list/manifests/audits; short bundles parse `script.md` (title, beat table, narration, cinematography, source chyrons, sources, pre-roll voice tag, total cost), extract first frames from each clip mp4 + the rendered episode mp4 as webp (via ffmpeg + cwebp), and copy character refs.
 3. Commit and push. Netlify deploys.
 
 ### Requirements
-- Sibling `../spoolcast-content/` checkout (sessions, styles)
+- Sibling `../spoolcast-content/` checkout (sessions, styles, shows)
 - `cwebp` for image downscale — `brew install webp`. ffmpeg's default brew build does NOT include libwebp.
+- `ffmpeg` for first-frame extraction (shorts only).
 - Node 22.
 
 ### Bundle shape
-Deliberately "database-shaped" — no filesystem paths, only public URLs, so a future spoolcast DB can emit the same contract without changing the frontend. Keys: `id, title, shippedAt, durationSec, coreMessage, video{youtubeId,thumbnailUrl,mp4Url}, style{name,anchorImageUrl,references[]}, chunks[], transcript, summary{writing,images,audio,render,audit}, showcase{hiddenChunkIds}`.
+Deliberately "database-shaped" — no filesystem paths, only public URLs, so a future spoolcast DB can emit the same contract without changing the frontend.
+
+**Long:** `id, format: "long", title, desc, shippedAt, durationSec, coreMessage, video{youtubeId,thumbnailUrl,mp4Url}, style{name,anchorImageUrl,references[]}, chunks[], transcript, summary{writing,images,audio,render,audit}, showcase{hiddenChunkIds}`.
+
+**Short:** `id, format: "short", show, title, desc, shippedAt, durationSec, topicTier, video{youtubeId,thumbnailUrl,mp4Url}, preRoll{burnedText,voiceTag}, characters[], beats[], sources[], transcript, summary{writing,videoClips,audio,render,cost}, showcase{hiddenBeatNs}`. Card thumbnail is the first frame of the rendered `episode/out/episode-NN.mp4` (extracted to `assets/poster.webp`); per-beat thumbnails come from each `episode/clips/<NN-name>.mp4`.
+
+Older shorts without a `script.md` (e.g. the pilot) get a thin bundle — title + poster + characters from `characters/`, no beats/sources/transcript. The detail page hides empty sections gracefully.
 
 ## Header / Navigation
 - "artlu.ai" + blinking cursor on the left

@@ -1,35 +1,70 @@
 [
   {
+    "id": "news-anime-bot-2026-04-30",
+    "format": "short",
+    "show": "news-anime-bot",
+    "title": "Microsoft to spend $120B on AI this year, used by 3% of customers",
+    "desc": "Daily AI-generated tech news satire. Microsoft Q3 earnings + Copilot adoption.",
+    "shippedAt": "2026-04-30",
+    "durationSec": 62,
+    "thumbnailUrl": "https://i.ytimg.com/vi/uBfr45P2aOM/oardefault.jpg"
+  },
+  {
+    "id": "news-anime-bot-2026-04-29",
+    "format": "short",
+    "show": "news-anime-bot",
+    "title": "OpenAI's $600B compute commitments and the $700B AI bill",
+    "desc": "Pilot episode of the daily AI news satire show. OpenAI Q1 + hyperscaler capex.",
+    "shippedAt": "2026-04-29",
+    "durationSec": 60,
+    "thumbnailUrl": "https://i.ytimg.com/vi/_umRCKLUG8k/oardefault.jpg"
+  },
+  {
     "id": "spoolcast-dev-log-03",
+    "format": "long",
+    "show": null,
     "title": "how AI hides its own mistakes — spoolcast dev log 3",
+    "desc": "",
     "shippedAt": "2026-04-27",
     "durationSec": 182,
     "thumbnailUrl": "https://img.youtube.com/vi/yozYCL3qOBs/maxresdefault.jpg"
   },
   {
     "id": "spoolcast-dev-log-02",
+    "format": "long",
+    "show": null,
     "title": "how I caught AI lying — spoolcast dev log 2",
+    "desc": "",
     "shippedAt": "2026-04-24",
     "durationSec": 199,
     "thumbnailUrl": "https://img.youtube.com/vi/-tvxNxfTnDc/maxresdefault.jpg"
   },
   {
     "id": "spoolcast-dev-log",
+    "format": "long",
+    "show": null,
     "title": "Building with AI: how I stopped my AI from silently breaking rules",
+    "desc": "",
     "shippedAt": "2026-04-21",
     "durationSec": 252,
     "thumbnailUrl": "https://img.youtube.com/vi/i3Z480n1k6k/maxresdefault.jpg"
   },
   {
     "id": "spoolcast-explainer",
+    "format": "long",
+    "show": null,
     "title": "I don't make videos. My AI pipeline does.",
+    "desc": "",
     "shippedAt": "2026-04-15",
     "durationSec": 480,
     "thumbnailUrl": "https://img.youtube.com/vi/7p43_3gHJj0/maxresdefault.jpg"
   },
   {
     "id": "tribe-session-001",
+    "format": "long",
+    "show": null,
     "title": "Meta TRIBE explainer (pilot)",
+    "desc": "",
     "shippedAt": "2026-03-25",
     "durationSec": 300,
     "thumbnailUrl": "https://img.youtube.com/vi/hqbmHuEtayM/maxresdefault.jpg"
