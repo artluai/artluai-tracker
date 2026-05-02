@@ -157,25 +157,64 @@ function parseShortScriptMd(content) {
     }
   }
 
-  // Sources — bullet list under "## Sources …". Optional URL anywhere in the
-  // line (typically trailing): pulled out into its own field so the page can
-  // render the attribution as a link.
+  // Sources — bullet list under "## Sources …". Three bullet shapes are
+  // recognized:
+  //   1. Markdown link:  - [Title](URL) optional-suffix
+  //   2. Colon split:    - Fact: Attribution [optional trailing URL]
+  //   3. Plain text:     - Free-form attribution
+  // All produce { fact, attribution, url? }; missing fact renders as an empty
+  // left column.
   const sources = [];
-  const sourcesMatch = content.match(/##\s*Sources[\s\S]*$/);
+  // Match the Sources section up to the next H2 (or EOF). Without the lookahead
+  // a sibling section like "## Audit notes" gets greedily slurped into Sources.
+  const sourcesMatch = content.match(/##\s*Sources\b[\s\S]*?(?=\n##\s|$)/);
   if (sourcesMatch) {
     const block = sourcesMatch[0];
-    const bullet = /^-\s+([^:\n]+):\s*(.+)$/gm;
+    const bulletRe = /^-\s+(.+)$/gm;
     let m;
-    while ((m = bullet.exec(block)) !== null) {
-      const fact = m[1].trim();
-      let rest = m[2].trim();
-      const urlMatch = rest.match(/(https?:\/\/\S+)/);
+    while ((m = bulletRe.exec(block)) !== null) {
+      const line = m[1].trim();
+
+      // Case 1: starts with a markdown link
+      const mdMatch = line.match(/^\[([^\]]+)\]\((https?:\/\/[^)]+)\)\s*(.*)$/);
+      if (mdMatch) {
+        const title = mdMatch[1].trim();
+        const url = mdMatch[2];
+        const suffix = mdMatch[3].trim();
+        // Split title on " — " or ":" to derive a short fact label.
+        const parts = title.split(/\s*—\s*|:\s*/);
+        let fact, attribution;
+        if (parts.length >= 2) {
+          fact = parts[0].trim();
+          attribution = parts.slice(1).join(" — ").trim();
+        } else {
+          fact = "";
+          attribution = title;
+        }
+        if (suffix) attribution = `${attribution} ${suffix}`.trim();
+        sources.push({ fact, attribution, url });
+        continue;
+      }
+
+      // Case 2: colon split (Fact: Attribution [URL])
+      const colonMatch = line.match(/^([^:]+):\s*(.+)$/);
+      if (colonMatch) {
+        const fact = colonMatch[1].trim();
+        let rest = colonMatch[2].trim();
+        const urlMatch = rest.match(/(https?:\/\/\S+)/);
+        const url = urlMatch ? urlMatch[1].replace(/[).,;]+$/, "") : null;
+        const attribution = url
+          ? rest.replace(url, "").replace(/[\s—–\-]+$/, "").trim()
+          : rest;
+        sources.push({ fact, attribution, url });
+        continue;
+      }
+
+      // Case 3: plain text — everything is the attribution
+      const urlMatch = line.match(/(https?:\/\/\S+)/);
       const url = urlMatch ? urlMatch[1].replace(/[).,;]+$/, "") : null;
-      // Strip the URL (and any trailing em-dash/hyphen separator) from the visible attribution.
-      const attribution = url
-        ? rest.replace(url, "").replace(/[\s—–\-]+$/, "").trim()
-        : rest;
-      sources.push({ fact, attribution, url });
+      const attribution = url ? line.replace(url, "").replace(/[\s—–\-]+$/, "").trim() : line;
+      sources.push({ fact: "", attribution, url });
     }
   }
 
@@ -562,10 +601,62 @@ async function buildShortBundle(shipped) {
     if (count > 0) log(id, `extracted ${count} beat clip thumbnail(s)`);
   }
 
-  // Recurring characters: copy refs as webp.
+  // Recurring characters — resolved via cast.txt + walk-up search order
+  // (per spoolcast VIDEO_OUTPUT_RULES §1.5). For each name in cast.txt, look
+  // for `<name>.<ext>` in this order, first match wins:
+  //   1. <session-dir>/characters/<name>.<ext>     (one-off / session-local)
+  //   2. <show-root>/characters/<name>.<ext>       (series-level cast)
+  //   3. <content-root>/archetypes/<name>.<ext>    (engine-wide archetypes)
+  // Filename basename without extension is the displayed character name.
+  // Backwards-compat: if cast.txt is missing, fall back to scanning the
+  // session-local characters/ dir as before.
   const charsOutDir = path.join(assetsDir, "characters");
+  const showRoot = path.join(CONTENT, "shows", show);
+  const archetypesRoot = path.join(CONTENT, "archetypes");
   const characters = [];
-  if (existsSync(charactersDir)) {
+
+  async function findCharacterFile(name) {
+    const dirs = [
+      path.join(sessionRoot, "characters"),
+      path.join(showRoot, "characters"),
+      archetypesRoot,
+    ];
+    for (const d of dirs) {
+      if (!existsSync(d)) continue;
+      const files = await readdir(d);
+      const hit = files.find(f => RASTER_EXT.test(f) && f.replace(/\.[^.]+$/, "") === name);
+      if (hit) return path.join(d, hit);
+    }
+    return null;
+  }
+
+  // Read cast.txt — one character name per line, comments + blank lines skipped.
+  let castNames = null;
+  try {
+    const castText = await readFile(path.join(sessionRoot, "cast.txt"), "utf8");
+    castNames = castText.split("\n").map(l => l.trim()).filter(l => l && !l.startsWith("#"));
+  } catch { /* no cast.txt → fallback to legacy session-dir scan */ }
+
+  if (castNames) {
+    for (const name of castNames) {
+      const srcPath = await findCharacterFile(name);
+      if (!srcPath) {
+        warn(id, `cast.txt names "${name}" but no matching ref found in session/show/archetypes`);
+        continue;
+      }
+      const outName = await importAsset(srcPath, charsOutDir, path.basename(srcPath));
+      if (!outName) continue;
+      characters.push({
+        name,
+        kind: "character",
+        imageUrl: `/videos/${id}/assets/characters/${outName}`,
+        description: "",
+        usedInBeats: (scriptData?.beats || []).filter(b => b.character === name).map(b => b.n),
+      });
+    }
+    if (characters.length > 0) log(id, `imported ${characters.length} character ref(s) (via cast.txt)`);
+  } else if (existsSync(charactersDir)) {
+    // Legacy: no cast.txt — scan everything in session-local characters/.
     const files = await readdir(charactersDir);
     for (const f of files) {
       if (!RASTER_EXT.test(f)) continue;
@@ -581,7 +672,7 @@ async function buildShortBundle(shipped) {
         });
       }
     }
-    if (characters.length > 0) log(id, `imported ${characters.length} character ref(s)`);
+    if (characters.length > 0) log(id, `imported ${characters.length} character ref(s) (legacy session-dir scan)`);
   }
 
   // Beats: combine script.md table + narration + cinematography + extracted clip frames.

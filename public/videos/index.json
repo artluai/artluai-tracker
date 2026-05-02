@@ -1,5 +1,25 @@
 [
   {
+    "id": "news-anime-bot-2026-05-01",
+    "format": "short",
+    "show": "news-anime-bot",
+    "title": "google + amazon's anthropic markup — aninews ep 3",
+    "desc": "Daily AI news satire. Half of Google's and Amazon's Q1 AI profit came from marking up their stake in Anthropic.",
+    "shippedAt": "2026-05-02",
+    "durationSec": 65,
+    "thumbnailUrl": "https://i.ytimg.com/vi/blptwJ1hGGM/oardefault.jpg"
+  },
+  {
+    "id": "spoolcast-dev-log-04",
+    "format": "long",
+    "show": null,
+    "title": "the bug an AI couldn't catch — spoolcast dev log 4",
+    "desc": "",
+    "shippedAt": "2026-05-02",
+    "durationSec": 264,
+    "thumbnailUrl": "https://img.youtube.com/vi/7Cp2e9Eo00M/maxresdefault.jpg"
+  },
+  {
     "id": "news-anime-bot-2026-04-30",
     "format": "short",
     "show": "news-anime-bot",
