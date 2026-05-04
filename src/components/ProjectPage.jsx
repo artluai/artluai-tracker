@@ -19,7 +19,7 @@ function isEmbeddable(url) {
   if (!url) return false;
   try {
     const { hostname } = new URL(url);
-    const EMBEDDABLE = ["netlify.app", "vercel.app", "github.io", "pages.dev", "netlify.com", "render.com", "railway.app", "fly.dev", "surge.sh"];
+    const EMBEDDABLE = ["netlify.app", "vercel.app", "github.io", "pages.dev", "netlify.com", "render.com", "railway.app", "fly.dev", "surge.sh", "manus.computer", "manuspre.computer", "manus-asia.computer", "manuscomputer.ai", "manusvm.computer", "adsmetri.com"];
     const NOT_EMBEDDABLE = ["github.com", "youtube.com", "youtu.be", "loom.com", "screen.studio", "twitter.com", "x.com", "linkedin.com", "notion.so", "drive.google.com", "docs.google.com"];
     if (NOT_EMBEDDABLE.some(d => hostname.includes(d))) return false;
     if (EMBEDDABLE.some(d => hostname.includes(d))) return true;

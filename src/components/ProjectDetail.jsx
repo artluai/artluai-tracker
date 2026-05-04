@@ -14,6 +14,11 @@ function isEmbeddable(url) {
       "netlify.app", "vercel.app", "github.io",
       "pages.dev", "netlify.com", "render.com", "railway.app",
       "fly.dev", "surge.sh",
+      // Manus default hosting subdomains
+      "manus.computer", "manuspre.computer", "manus-asia.computer",
+      "manuscomputer.ai", "manusvm.computer",
+      // Custom domains for Manus-hosted projects
+      "adsmetri.com",
     ];
     const NOT_EMBEDDABLE = [
       "github.com", "youtube.com", "youtu.be", "loom.com",
