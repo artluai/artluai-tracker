@@ -1,5 +1,35 @@
 [
   {
+    "id": "spoolcast-dev-log-05",
+    "format": "long",
+    "show": null,
+    "title": "repo gps for ai agents — spoolcast dev log 5",
+    "desc": "",
+    "shippedAt": "2026-05-07",
+    "durationSec": 558,
+    "thumbnailUrl": "https://img.youtube.com/vi/nOfkukxHjm4/maxresdefault.jpg"
+  },
+  {
+    "id": "news-anime-bot-2026-05-06",
+    "format": "short",
+    "show": "news-anime-bot",
+    "title": "Apple pays $250M for Siri features that didn't ship",
+    "desc": "Daily AI news satire. Apple settles for $250M over a Siri 2.0 it announced at WWDC 2024 but never shipped. The new one ships at WWDC 2026 — powered by Google's Gemini.",
+    "shippedAt": "2026-05-06",
+    "durationSec": 63,
+    "thumbnailUrl": "https://i.ytimg.com/vi/8aepPT4p4OI/oardefault.jpg"
+  },
+  {
+    "id": "news-anime-bot-2026-05-03",
+    "format": "short",
+    "show": "news-anime-bot",
+    "title": "Tesla targets 10M Optimus robots — currently folding laundry",
+    "desc": "Daily AI news satire. Humanoid robot factories ramping; the early units fold one shirt at a time. Wall Street pegs the market at $13B by 2029.",
+    "shippedAt": "2026-05-03",
+    "durationSec": 57,
+    "thumbnailUrl": "https://i.ytimg.com/vi/59M50WwnxPk/oardefault.jpg"
+  },
+  {
     "id": "news-anime-bot-2026-05-01",
     "format": "short",
     "show": "news-anime-bot",
