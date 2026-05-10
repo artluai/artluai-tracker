@@ -1,5 +1,42 @@
 [
   {
+    "id": "spoolcast-dev-log-06",
+    "title": "why ai makes things up about its own work — spoolcast dev log 6",
+    "youtubeId": "c1tWTNh2D1Y",
+    "shippedAt": "2026-05-08",
+    "durationSec": 248,
+    "hiddenChunkIds": [],
+    "notes": "Sixth dev-log."
+  },
+  {
+    "id": "news-anime-bot-2026-05-08",
+    "format": "short",
+    "show": "news-anime-bot",
+    "sessionDate": "2026-05-08",
+    "title": "Google's AI Health Coach asks for your sleep data and $9.99",
+    "desc": "Daily AI news satire. Google turns Fitbit into Google Health, launches a Gemini-powered coach behind a $9.99/mo gate. Not for medical purposes.",
+    "youtubeId": "5tFAfZr5biI",
+    "tiktokUrl": "https://www.tiktok.com/@artlu.ai/video/7637591100617772318",
+    "shippedAt": "2026-05-08",
+    "durationSec": 57,
+    "hiddenBeatNs": [],
+    "notes": "Episode 7 of news-anime-bot."
+  },
+  {
+    "id": "news-anime-bot-2026-05-07",
+    "format": "short",
+    "show": "news-anime-bot",
+    "sessionDate": "2026-05-07",
+    "title": "Elon leases his data center to the AI company he once criticized",
+    "desc": "Daily AI news satire. Anthropic gets all 220K GPUs of Colossus 1; xAI dissolves into SpaceXAI; the rivals are now roommates planning compute in orbit.",
+    "youtubeId": "jiwn-DjIVno",
+    "tiktokUrl": "https://www.tiktok.com/@artlu.ai/video/7637232628285934879",
+    "shippedAt": "2026-05-07",
+    "durationSec": 57,
+    "hiddenBeatNs": [],
+    "notes": "Episode 6 of news-anime-bot."
+  },
+  {
     "id": "spoolcast-dev-log-05",
     "title": "repo gps for ai agents — spoolcast dev log 5",
     "youtubeId": "nOfkukxHjm4",

@@ -1,5 +1,35 @@
 [
   {
+    "id": "spoolcast-dev-log-06",
+    "format": "long",
+    "show": null,
+    "title": "why ai makes things up about its own work — spoolcast dev log 6",
+    "desc": "",
+    "shippedAt": "2026-05-08",
+    "durationSec": 248,
+    "thumbnailUrl": "https://img.youtube.com/vi/c1tWTNh2D1Y/maxresdefault.jpg"
+  },
+  {
+    "id": "news-anime-bot-2026-05-08",
+    "format": "short",
+    "show": "news-anime-bot",
+    "title": "Google's AI Health Coach asks for your sleep data and $9.99",
+    "desc": "Daily AI news satire. Google turns Fitbit into Google Health, launches a Gemini-powered coach behind a $9.99/mo gate. Not for medical purposes.",
+    "shippedAt": "2026-05-08",
+    "durationSec": 57,
+    "thumbnailUrl": "https://i.ytimg.com/vi/5tFAfZr5biI/oardefault.jpg"
+  },
+  {
+    "id": "news-anime-bot-2026-05-07",
+    "format": "short",
+    "show": "news-anime-bot",
+    "title": "Elon leases his data center to the AI company he once criticized",
+    "desc": "Daily AI news satire. Anthropic gets all 220K GPUs of Colossus 1; xAI dissolves into SpaceXAI; the rivals are now roommates planning compute in orbit.",
+    "shippedAt": "2026-05-07",
+    "durationSec": 57,
+    "thumbnailUrl": "https://i.ytimg.com/vi/jiwn-DjIVno/oardefault.jpg"
+  },
+  {
     "id": "spoolcast-dev-log-05",
     "format": "long",
     "show": null,
