@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkBreaks from "remark-breaks";
 import EmbedFrame from "./EmbedFrame";
 import FileBrowser from "./FileBrowser";
 
@@ -109,7 +112,14 @@ export default function ProjectDetail({ project, isAdmin }) {
             <>
               {p.longDesc?.trim() && (
                 <Sec label="description">
-                  <div style={{ fontSize: 12, color: "var(--text-sub)", lineHeight: 1.7, whiteSpace: "pre-wrap", maxWidth: 700 }}>{p.longDesc}</div>
+                  <div style={S.mdRoot}>
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm, remarkBreaks]}
+                      components={mdComponents}
+                    >
+                      {p.longDesc}
+                    </ReactMarkdown>
+                  </div>
                 </Sec>
               )}
               {p.media?.trim() && (
@@ -185,6 +195,33 @@ function Sec({ label, children }) {
   );
 }
 
+// Markdown element renderers — every element styled with existing design tokens only.
+// react-markdown does not render raw HTML, so descriptions cannot inject scripts.
+const mdComponents = {
+  p: ({ children }) => <p style={S.mdP}>{children}</p>,
+  strong: ({ children }) => <strong style={S.mdStrong}>{children}</strong>,
+  em: ({ children }) => <em style={{ fontStyle: "italic" }}>{children}</em>,
+  h1: ({ children }) => <h1 style={{ ...S.mdH, fontSize: 16 }}>{children}</h1>,
+  h2: ({ children }) => <h2 style={{ ...S.mdH, fontSize: 14 }}>{children}</h2>,
+  h3: ({ children }) => <h3 style={{ ...S.mdH, fontSize: 12.5 }}>{children}</h3>,
+  h4: ({ children }) => <h4 style={{ ...S.mdH, fontSize: 12 }}>{children}</h4>,
+  ul: ({ children }) => <ul style={S.mdList}>{children}</ul>,
+  ol: ({ children }) => <ol style={S.mdList}>{children}</ol>,
+  li: ({ children }) => <li style={S.mdLi}>{children}</li>,
+  a: ({ href, children }) => <a href={href} target="_blank" rel="noreferrer" style={S.mdLink}>{children}</a>,
+  code: ({ node, className, children, ...rest }) => {
+    const isBlock = String(children).includes("\n") || /language-/.test(className || "");
+    return <code style={isBlock ? S.mdCodeBlock : S.mdCodeInline} {...rest}>{children}</code>;
+  },
+  pre: ({ children }) => <pre style={S.mdPre}>{children}</pre>,
+  blockquote: ({ children }) => <blockquote style={S.mdQuote}>{children}</blockquote>,
+  hr: () => <hr style={S.mdHr} />,
+  img: ({ src, alt }) => <img src={src} alt={alt || ""} style={S.mdImg} />,
+  table: ({ children }) => <table style={S.mdTable}>{children}</table>,
+  th: ({ children }) => <th style={S.mdTh}>{children}</th>,
+  td: ({ children }) => <td style={S.mdTd}>{children}</td>,
+};
+
 const S = {
   wrap: { background: "var(--surface)", borderBottom: "1px solid var(--border)" },
   tabBar: { display: "flex", borderBottom: "1px solid var(--border)", padding: "0 14px", background: "var(--bg)" },
@@ -200,4 +237,22 @@ const S = {
   embedPanel: { padding: 12 },
   fileRow: { background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 4, padding: "10px 12px", marginBottom: 6 },
   fileContent: { fontSize: 11, color: "var(--text)", background: "var(--bg)", padding: "8px 10px", borderRadius: 3, overflow: "auto", maxHeight: 200, whiteSpace: "pre-wrap", wordBreak: "break-word", margin: 0, lineHeight: 1.5 },
+
+  // Markdown description styling — existing tokens only, theme-safe via CSS variables.
+  mdRoot: { fontSize: 12, color: "var(--text-sub)", lineHeight: 1.7, maxWidth: 700 },
+  mdP: { margin: "0 0 10px" },
+  mdStrong: { color: "var(--text-bright)", fontWeight: 600 },
+  mdH: { color: "var(--text-bright)", fontWeight: 600, lineHeight: 1.35, margin: "18px 0 8px" },
+  mdList: { margin: "0 0 10px", paddingLeft: 18 },
+  mdLi: { marginBottom: 3 },
+  mdLink: { color: "var(--green)", textDecoration: "none", borderBottom: "1px solid var(--green-border)" },
+  mdCodeInline: { fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 3, padding: "1px 5px", color: "var(--text)" },
+  mdCodeBlock: { fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, lineHeight: 1.55, background: "none", border: "none", padding: 0, color: "var(--text)" },
+  mdPre: { background: "var(--bg)", border: "1px solid var(--border)", borderRadius: 4, padding: "10px 12px", overflow: "auto", margin: "0 0 10px" },
+  mdQuote: { margin: "0 0 10px", padding: "2px 0 2px 12px", borderLeft: "2px solid var(--green-border)", color: "var(--dim)", fontStyle: "italic" },
+  mdHr: { border: "none", borderTop: "1px solid var(--divider)", margin: "14px 0" },
+  mdImg: { maxWidth: "100%", border: "1px solid var(--border)", borderRadius: 6, display: "block", margin: "4px 0 12px" },
+  mdTable: { borderCollapse: "collapse", fontSize: 11, margin: "0 0 10px" },
+  mdTh: { border: "1px solid var(--border)", padding: "5px 9px", textAlign: "left", background: "var(--bg)", color: "var(--text-bright)", fontWeight: 600 },
+  mdTd: { border: "1px solid var(--border)", padding: "5px 9px", textAlign: "left" },
 };
