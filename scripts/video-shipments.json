@@ -1,5 +1,19 @@
 [
   {
+    "videoId": "news-anime-bot-2026-06-15",
+    "format": "short",
+    "show": "news-anime-bot",
+    "sessionDate": "2026-06-15",
+    "title": "World's Largest IPO Lets You Own A Rocket, A Satellite Network, And One Very Expensive Chatbot — Aninews ep 18",
+    "desc": "Daily AI news satire. SpaceX completes the largest IPO in history at ~$1.77T — and thanks to the xAI merger, one share buys a rocket company, Starlink, and an AI lab that lost $6.4B on $3.2B of revenue. Starlink is the only part that profits; the founder fires the engines, cranks the one productive pump, and shovels money into the furnace that burns it.",
+    "youtubeId": "oKtCXfyz5w4",
+    "tiktokUrl": "https://www.tiktok.com/@artlu.ai/video/7651665719012150558",
+    "shippedAt": "2026-06-15",
+    "durationSec": 72,
+    "hiddenBeatNs": [],
+    "notes": "Aninews ep 18. New entry — script creates the tracker doc. SpaceX/xAI record IPO. Cyberpunk rocket-launch trope: three engines = Starlink pump, rocket nozzle, AI furnace. 12 beats, Seedance 720p. First episode on Edge/Andrew TTS + Whisper forced-alignment captions; beats 3-5 re-cut around Musk per the people-story rule."
+  },
+  {
     "videoId": "spoolcast-dev-log-11",
     "format": "long",
     "show": "spoolcast-dev-log",

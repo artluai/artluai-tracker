@@ -1,0 +1,203 @@
+{
+  "id": "news-anime-bot-2026-06-15",
+  "format": "short",
+  "show": "news-anime-bot",
+  "title": "World's Largest IPO Lets You Own A Rocket, A Satellite Network, And One Very Expensive Chatbot — Aninews ep 18",
+  "desc": "Daily AI news satire. SpaceX completes the largest IPO in history at ~$1.77T — and thanks to the xAI merger, one share buys a rocket company, Starlink, and an AI lab that lost $6.4B on $3.2B of revenue. Starlink is the only part that profits; the founder fires the engines, cranks the one productive pump, and shovels money into the furnace that burns it.",
+  "shippedAt": "2026-06-15",
+  "durationSec": 72,
+  "topicTier": "GREEN",
+  "video": {
+    "youtubeId": "oKtCXfyz5w4",
+    "tiktokId": "7651665719012150558",
+    "tiktokUrl": "https://www.tiktok.com/@artlu.ai/video/7651665719012150558",
+    "mp4Url": null,
+    "thumbnailUrl": "https://i.ytimg.com/vi/oKtCXfyz5w4/oardefault.jpg"
+  },
+  "preRoll": {
+    "burnedText": "⚠ SATIRE — AI-GENERATED PARODY — NOT REAL",
+    "voiceTag": "FAUX7 News. Satire."
+  },
+  "characters": [
+    {
+      "name": "musk",
+      "kind": "character",
+      "imageUrl": "/videos/news-anime-bot-2026-06-15/assets/characters/musk.webp",
+      "description": "",
+      "usedInBeats": []
+    }
+  ],
+  "beats": [
+    {
+      "n": 1,
+      "name": "founder-loads-fuel-canister",
+      "durationSec": 5,
+      "narration": "On Friday, SpaceX completed the largest initial public offering in history.",
+      "character": "musk, ipo_gantry, fuel canister",
+      "sourceChyron": "launch pad — wide",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 2,
+      "name": "public-boards-rocket",
+      "durationSec": 6,
+      "narration": "At a hundred thirty-five dollars a share, the company was valued at about one point seven seven trillion dollars.",
+      "character": "rocket_pad, crowd",
+      "sourceChyron": "rocket exterior — low-angle ramp",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 3,
+      "name": "three-engine-reveal",
+      "durationSec": 6,
+      "narration": "By some measures, that made it more than three times the size of the largest American listing before it.",
+      "character": "musk, engine_bay",
+      "sourceChyron": "engine bay — cutaway",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 4,
+      "name": "starlink-pump-feeds",
+      "durationSec": 7,
+      "narration": "For their money, investors received a rocket company, a satellite-internet network, and an artificial intelligence lab.",
+      "character": "musk, starlink_deck, fuel line",
+      "sourceChyron": "pump deck — side",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 5,
+      "name": "ai-furnace-devours",
+      "durationSec": 7,
+      "narration": "The satellite-internet network, Starlink, was the only one of the three that actually turned a profit.",
+      "character": "musk, ai_furnace",
+      "sourceChyron": "furnace — wide mouth",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 6,
+      "name": "market-floor-cheers",
+      "durationSec": 6,
+      "narration": "Reports put Starlink's operating profit near four point four billion dollars last year.",
+      "character": "trading_floor, crowd",
+      "sourceChyron": "trading floor — gallery",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 7,
+      "name": "shovel-the-losses",
+      "durationSec": 7,
+      "narration": "The artificial intelligence lab reportedly lost six point four billion dollars on three point two billion in revenue.",
+      "character": "ai_furnace, shovel crew",
+      "sourceChyron": "furnace — tight over-shoulder",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 8,
+      "name": "one-pump-two-mouths",
+      "durationSec": 6,
+      "narration": "It had joined through an all-stock merger earlier this year, bringing its chatbot and its costs aboard.",
+      "character": "starlink_deck, fuel line",
+      "sourceChyron": "pump deck — overhead, two pipes",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 9,
+      "name": "investors-strapped-in",
+      "durationSec": 6,
+      "narration": "Filings indicate the combined company spent roughly fourteen billion dollars in cash over the year.",
+      "character": "crowd (cabin)",
+      "sourceChyron": "rocket cabin — interior",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 10,
+      "name": "founder-ignition",
+      "durationSec": 6,
+      "narration": "The prospectus also notes plans to scale the chatbot to multiple trillions of parameters.",
+      "character": "musk, ipo_gantry",
+      "sourceChyron": "launch pad — tight ignition",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 11,
+      "name": "stock-pops",
+      "durationSec": 6,
+      "narration": "On its first day of trading, the stock climbed from a hundred thirty-five dollars to about a hundred sixty-one.",
+      "character": "trading_floor, gauge",
+      "sourceChyron": "trading floor — single gauge",
+      "cinematography": null,
+      "clipImageUrl": null
+    },
+    {
+      "n": 12,
+      "name": "launch-furnace-still-eating",
+      "durationSec": 8,
+      "narration": "Investors are now free to own all three businesses, and to fund whichever one is currently on fire.",
+      "character": "rocket_pad",
+      "sourceChyron": "rocket exterior — climbing",
+      "cinematography": null,
+      "clipImageUrl": null
+    }
+  ],
+  "sources": [
+    {
+      "fact": "",
+      "attribution": "SpaceX targets $135 IPO price at a valuation of $1.77 trillion - CNBC",
+      "url": "https://www.cnbc.com/2026/06/03/spacex-ipo-stock-price-roadshow-musk.html"
+    },
+    {
+      "fact": "",
+      "attribution": "xAI burned $6.4B last year - SpaceX's IPO filing shows why the spending is far from over - TechCrunch",
+      "url": "https://techcrunch.com/2026/05/20/xai-burned-6-4b-last-year-spacexs-ipo-filing-shows-why-the-spending-is-far-from-over/"
+    },
+    {
+      "fact": "",
+      "attribution": "SpaceX files for the largest IPO ever while absorbing a $4.94 billion loss from its xAI merger - TechTimes",
+      "url": "https://www.techtimes.com/articles/316724/20260516/spacex-files-largest-ipo-ever-while-absorbing-494-billion-loss-its-xai-merger.htm"
+    },
+    {
+      "fact": "SpaceX trillion-dollar IPO countdown",
+      "attribution": "Starlink profits vs xAI's cash burn - BigGo Finance",
+      "url": "https://finance.biggo.com/news/mvz2LJ4BLfE1EzqP4X8P"
+    },
+    {
+      "fact": "",
+      "attribution": "SpaceX (SPCX) IPO date, share price and data - Investing.com",
+      "url": "https://www.investing.com/equities/spacex"
+    }
+  ],
+  "transcript": "On Friday, SpaceX completed the largest initial public offering in history. At a hundred thirty-five dollars a share, the company was valued at about one point seven seven trillion dollars. By some measures, that made it more than three times the size of the largest American listing before it. For their money, investors received a rocket company, a satellite-internet network, and an artificial intelligence lab. The satellite-internet network, Starlink, was the only one of the three that actually turned a profit. Reports put Starlink's operating profit near four point four billion dollars last year. The artificial intelligence lab reportedly lost six point four billion dollars on three point two billion in revenue. It had joined through an all-stock merger earlier this year, bringing its chatbot and its costs aboard. Filings indicate the combined company spent roughly fourteen billion dollars in cash over the year. The prospectus also notes plans to scale the chatbot to multiple trillions of parameters. On its first day of trading, the stock climbed from a hundred thirty-five dollars to about a hundred sixty-one. Investors are now free to own all three businesses, and to fund whichever one is currently on fire.",
+  "summary": {
+    "writing": {
+      "author": "Claude",
+      "role": "script · beat plan · narration · sources audit"
+    },
+    "videoClips": {
+      "platform": "kie.ai",
+      "models": [
+        "Seedance 2.0 Fast"
+      ],
+      "clipCount": 12
+    },
+    "audio": null,
+    "render": {
+      "engine": "ffmpeg",
+      "passed": true
+    },
+    "cost": null
+  },
+  "showcase": {
+    "hiddenBeatNs": [],
+    "notes": "Aninews ep 18. New entry — script creates the tracker doc. SpaceX/xAI record IPO. Cyberpunk rocket-launch trope: three engines = Starlink pump, rocket nozzle, AI furnace. 12 beats, Seedance 720p. First episode on Edge/Andrew TTS + Whisper forced-alignment captions; beats 3-5 re-cut around Musk per the people-story rule."
+  }
+}

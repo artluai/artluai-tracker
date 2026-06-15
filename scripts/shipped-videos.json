@@ -1,5 +1,19 @@
 [
   {
+    "id": "news-anime-bot-2026-06-15",
+    "title": "World's Largest IPO Lets You Own A Rocket, A Satellite Network, And One Very Expensive Chatbot — Aninews ep 18",
+    "desc": "Daily AI news satire. SpaceX completes the largest IPO in history at ~$1.77T — and thanks to the xAI merger, one share buys a rocket company, Starlink, and an AI lab that lost $6.4B on $3.2B of revenue. Starlink is the only part that profits; the founder fires the engines, cranks the one productive pump, and shovels money into the furnace that burns it.",
+    "youtubeId": "oKtCXfyz5w4",
+    "shippedAt": "2026-06-15",
+    "durationSec": 72,
+    "notes": "Aninews ep 18. New entry — script creates the tracker doc. SpaceX/xAI record IPO. Cyberpunk rocket-launch trope: three engines = Starlink pump, rocket nozzle, AI furnace. 12 beats, Seedance 720p. First episode on Edge/Andrew TTS + Whisper forced-alignment captions; beats 3-5 re-cut around Musk per the people-story rule.",
+    "format": "short",
+    "show": "news-anime-bot",
+    "sessionDate": "2026-06-15",
+    "tiktokUrl": "https://www.tiktok.com/@artlu.ai/video/7651665719012150558",
+    "hiddenBeatNs": []
+  },
+  {
     "id": "spoolcast-dev-log-11",
     "title": "The $100 AI Agent Failed. The $2 One Shipped It — spoolcast dev log 11",
     "desc": "My $100/month AI coding agent kept failing mid-ship — not because it was dumb, but because the VPN connection kept dropping during context compaction. Every time it tried to save its work, the session died. Three times in a row from a Shenzhen hotel room at midnight. I switched to Hermes, an open-source agent that runs entirely on my laptop, and the same session that cost $30 became $2.",
