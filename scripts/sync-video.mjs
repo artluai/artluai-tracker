@@ -495,7 +495,7 @@ async function buildLongBundle(shipped) {
       sceneCount,
     } : null,
     audio: session.tts_voice ? {
-      tts: "Google Cloud TTS",
+      tts: /Neural$/i.test(session.tts_voice) ? "Microsoft Edge TTS" : "Google Cloud TTS",
       voice: session.tts_voice,
       playbackRate: session.tts_playback_rate ?? 1.0,
       beatCount: totalBeats,

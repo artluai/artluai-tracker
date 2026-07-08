@@ -1,5 +1,18 @@
 [
   {
+    "id": "spoolcast-dev-log-12",
+    "format": "long",
+    "show": null,
+    "title": "When The AI Approval Badge Was A Lie — spoolcast dev log 12",
+    "desc": "A bright green \"Approved\" badge showed up on a completely blank, crashed screen — the interface was guessing the pipeline's state instead of knowing it. This dev log tears out a 5,000-line UI file and a type-checker that was validating nothing, then rebuilds around a single engine-owned source of truth so the interface can't pretend a step is done when it isn't.",
+    "shippedAt": "2026-07-08",
+    "durationSec": 288,
+    "youtubeId": "6dEz5u4YjV0",
+    "tiktokId": null,
+    "tiktokUrl": null,
+    "thumbnailUrl": "https://img.youtube.com/vi/6dEz5u4YjV0/maxresdefault.jpg"
+  },
+  {
     "id": "news-anime-bot-2026-06-15",
     "format": "short",
     "show": "news-anime-bot",

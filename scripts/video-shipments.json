@@ -1,5 +1,19 @@
 [
   {
+    "videoId": "spoolcast-dev-log-12",
+    "format": "long",
+    "show": "spoolcast-dev-log",
+    "sessionDate": "2026-07-08",
+    "title": "When The AI Approval Badge Was A Lie — spoolcast dev log 12",
+    "desc": "A bright green \"Approved\" badge showed up on a completely blank, crashed screen — the interface was guessing the pipeline's state instead of knowing it. This dev log tears out a 5,000-line UI file and a type-checker that was validating nothing, then rebuilds around a single engine-owned source of truth so the interface can't pretend a step is done when it isn't.",
+    "youtubeId": "6dEz5u4YjV0",
+    "shippedAt": "2026-07-08",
+    "durationSec": 288,
+    "hiddenChunkIds": [],
+    "notes": "Spoolcast dev log 12. Optimistic-UI failure: green approval badge on a crashed blank page. Root cause: a 5,000+ line UI file and tsconfig with an empty files list (validating nothing). Fix: UI file slashed to <500 lines routing shell, centralized engine-owned state manager (per-node dirty tracking), engine-first save flow (UI advances only if engine accepts + writes to disk), strict drafting/approving separation, metered agent drafting logged to a usage ledger. wojak-gpt2 style, AndrewNeural 1.0x, ~4:48. New tracker entry (no trackerDocId).",
+    "trackerDocId": "iwKB0SEux8xuXMav7Jfa"
+  },
+  {
     "videoId": "news-anime-bot-2026-06-15",
     "format": "short",
     "show": "news-anime-bot",

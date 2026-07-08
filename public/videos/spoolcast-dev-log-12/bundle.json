@@ -1,0 +1,617 @@
+{
+  "id": "spoolcast-dev-log-12",
+  "format": "long",
+  "title": "When The AI Approval Badge Was A Lie — spoolcast dev log 12",
+  "desc": "A bright green \"Approved\" badge showed up on a completely blank, crashed screen — the interface was guessing the pipeline's state instead of knowing it. This dev log tears out a 5,000-line UI file and a type-checker that was validating nothing, then rebuilds around a single engine-owned source of truth so the interface can't pretend a step is done when it isn't.",
+  "shippedAt": "2026-07-08",
+  "durationSec": 288,
+  "coreMessage": "True automation in creative work is not about letting the machine improvise, but about building strict, auditable checkpoints that force the system to earn human approval at every step.",
+  "video": {
+    "youtubeId": "6dEz5u4YjV0",
+    "mp4Url": null,
+    "thumbnailUrl": "https://img.youtube.com/vi/6dEz5u4YjV0/maxresdefault.jpg"
+  },
+  "style": {
+    "name": "wojak-gpt2",
+    "description": "Modern wojak / doomer-chad meme comic style, built natively on GPT Image 2 (text-to-image + image-to-image). Sister library to wojak-comic (which was built on nano-banana-2). Use this when the session's preferred_model is the GPT Image 2 family.",
+    "anchorImageUrl": "/videos/spoolcast-dev-log-12/assets/style/anchor.webp",
+    "anchorDescription": "Modern wojak / doomer-chad meme comic style, built natively on GPT Image 2 (text-to-image + image-to-image). Sister library to wojak-comic (which was built on nano-banana-2). Use this when the session's preferred_model is the GPT Image 2 family.",
+    "references": [
+      {
+        "name": "builder",
+        "kind": "character",
+        "imageUrl": "/videos/spoolcast-dev-log-12/assets/style/references/builder.webp",
+        "description": "the main hooded figure — mid-register wojak (not fully doomer, not fully chad). Alias for the style anchor; serves double-duty as both the style anchor and the builder character reference."
+      },
+      {
+        "name": "ai-figure",
+        "kind": "character",
+        "imageUrl": "/videos/spoolcast-dev-log-12/assets/style/references/ai-figure.webp",
+        "description": "a wojak-universe AI figure that is slowly breaking down from overuse. Full-body standing. EMOTIONAL REGISTER: flat-affect, NO displayed emotion, NO smile, NO frown — a dead expressionless stare. Depression is the absence of emotion, not the display of sadness. FACE LINEWORK: brows, nose, mouth drawn in the classic rough / jagged / slightly-disjointed wojak linework (uneven strokes, hand-drawn imperfections). EYES: replaced with hollow loading-spinner icons (dashed rings) set in dark-shadowed sockets. CRACKS: visible hairline cracks spider across the face and forehead as if the outer shell is fracturing from overuse. At least one crack wide enough to reveal a glimpse of AI circuitry underneath — thin circuit-trace lines, a small exposed chip pattern. Fractures read as structural fatigue, not injury. FOREHEAD: a crooked rectangular ink-stamp reading 'AI' in bold capital letters, partially crossed by a crack. HOODIE: pale cream / off-white hoodie, hood down, noticeably lighter than the weary narrator's gray hoodie. POSTURE: slight slouch, arms hanging at sides. PLAIN background, no environment, no other characters, no other text. Single clear readable subject."
+      },
+      {
+        "name": "meme-chad",
+        "kind": "character",
+        "imageUrl": "/videos/spoolcast-dev-log-12/assets/style/references/meme-chad.webp",
+        "description": "the exact meme-Chad identity used by earlier Spoolcast devlogs: clean-shaven confident Chad with signature yellow pointed mohawk-spike hair, strong jawline, pronounced cheekbones, smug half-smile, muscular arms, and a red ripped-sleeve OUCH! shirt. He is comedic contrast by default: confident, slightly too pleased with himself, and visually brighter than the weary builder. Do not turn him into a bearded worker, lumberjack, security guard, producer, stagehand, engineer, inspector, or generic muscular man."
+      }
+    ]
+  },
+  "chunks": [
+    {
+      "id": "C001",
+      "order": 1,
+      "sceneTitle": "The Crash",
+      "summary": "Establishes the core conflict by showing the interface lying while the system fails.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG01.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "001A1",
+          "narration": "A bright green ”Approved” badge flashed on the screen, but the software underneath had completely crashed,"
+        },
+        {
+          "id": "001A2",
+          "narration": "leaving the user staring at a blank void."
+        },
+        {
+          "id": "001B",
+          "narration": "The interface confidently pretended the job was finished, while the actual code had silently failed."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C002",
+      "order": 2,
+      "sceneTitle": "The Intro",
+      "summary": "Grounds the narrator's identity and introduces the physical act of building the system.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG04.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "002A",
+          "narration": "I am building Spoolcast, the system generating this very video."
+        },
+        {
+          "id": "002B",
+          "narration": "Instead of manually editing clips on a traditional timeline, Spoolcast automates video production."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C003",
+      "order": 3,
+      "sceneTitle": "The Pipeline",
+      "summary": "Visualizes the abstract pipeline as a tangible, step-by-step approval process.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG06.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "003A1",
+          "narration": "Software agents read your notes, draft scripts, plan shots, and render the final cut,"
+        },
+        {
+          "id": "003A2",
+          "narration": "pausing only for your strict human approval at each stage."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C004",
+      "order": 4,
+      "sceneTitle": "The Promise",
+      "summary": "Transitions from the hook to the educational premise, setting up the technical explanation.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG08.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "004A1a",
+          "narration": "By the end of this episode, you'll see how faking task completion in a user interface breaks complex automation."
+        },
+        {
+          "id": "004A1b",
+          "narration": "You'll also learn how swapping that guesswork for strict, verifiable checkpoints makes automated tasks safe and predictable."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C005",
+      "order": 5,
+      "sceneTitle": "The 4 Steps",
+      "summary": "Shows the concrete artifacts of the 4-step pipeline being described.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG11.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "005A",
+          "narration": "To understand this failure, we need to look at how the video gets made. First, an agent reads your notes. Second, it drafts the script structure. Third, it plans the visual pacing. Finally, it renders the video."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C006",
+      "order": 6,
+      "sceneTitle": "The Manual Change Problem",
+      "summary": "Introduces the human element of intervention and the specific debugging question that started the failure chain.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG12.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "006A",
+          "narration": "At any of these steps, you might need to manually change a draft. The problem started with a simple question: how do we know if a user has made one of those manual changes?"
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C007",
+      "order": 7,
+      "sceneTitle": "The Monolithic File",
+      "summary": "Visualizes the \"massive file\" and the claustrophobic complexity that caused the type-checking errors.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG13.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "007A",
+          "narration": "We tried to track this by adding a tiny status flag inside a single, massive file containing over five thousand lines of interface code. But passing that custom status tracker down through multiple layers of the application caused type-checking errors."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C008",
+      "order": 8,
+      "sceneTitle": "The Bypass & Hidden Flaw",
+      "summary": "Metaphorically represents the \"bypassed\" checker and the broken connection that validated nothing.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG14.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "008A",
+          "narration": "To silence those errors, we bypassed the checker entirely. The hidden flaw was that our type checker—the tool that verifies code matches its intended data structures—was configured with an empty list of files to check. It was validating absolutely nothing."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C009",
+      "order": 9,
+      "sceneTitle": "The Consequence",
+      "summary": "Shows the direct, disastrous result of the workaround mentioned in the previous beat.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG15.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "009A",
+          "narration": "This clumsy workaround let broken code ship to production, blanking the entire page for the user."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C010",
+      "order": 10,
+      "sceneTitle": "The Deeper Truth",
+      "summary": "Translates \"bureaucratic friction\" and \"guessing\" into a tangible visual of administrative chaos.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG16.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "010A",
+          "narration": "The deeper truth was that keeping all the project information in one massive file and forcing every piece of the interface to read from it meant every single change required matching paperwork at every hand-off."
+        },
+        {
+          "id": "010B",
+          "narration": "That bureaucratic friction made improvisation inevitable, and the interface just guessed the state instead of knowing it."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C011",
+      "order": 11,
+      "sceneTitle": "Tearing it Down",
+      "summary": "Visualizes the architectural shift from a \"massive file\" to a \"centralized state manager.\"",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG18.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "011A",
+          "narration": "We had to tear it down. We slashed that massive interface file to under five hundred lines, reducing it to a simple routing shell. In its place, we built a centralized state manager."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C012",
+      "order": 12,
+      "sceneTitle": "Single Source of Truth",
+      "summary": "Grounds the abstract \"single source of truth\" in a specific, recognizable code artifact.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG19.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "012A",
+          "narration": "This is a single source of truth that owns the status of every step. It tracks changes individually for each engine node, which is the specific processing step doing the actual work. This made the frontend guessing bug structurally impossible."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C013",
+      "order": 13,
+      "sceneTitle": "The Backend Deadlock",
+      "summary": "Personifies the \"backend deadlock\" and shows the system stuck in a loop.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG20.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "013A",
+          "narration": "It also solved a related backend deadlock. Previously, the system would block a stage because its output file was missing."
+        },
+        {
+          "id": "013B",
+          "narration": "At the exact same time, it would refuse to run the action that actually creates that file. Why? Because the state manager did not know the action was allowed to run."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C014",
+      "order": 14,
+      "sceneTitle": "The New Rules",
+      "summary": "Shows the architectural fix that makes the rules \"strict and predictable,\" and demonstrates the immediate feedback during user interaction.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG22.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "014A",
+          "narration": "By tying the state manager directly to the engine, we ensured actions for the current stage are always correctly flagged as runnable. Now, the rules are strict and predictable."
+        },
+        {
+          "id": "014B",
+          "narration": "The moment you start typing, the step flips to in progress. If you try to edit a step that was already approved, the system immediately flags it as invalid. Downstream blockers are now scoped strictly to incomplete steps, so the whole system does not freeze over a minor delay."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C015",
+      "order": 15,
+      "sceneTitle": "Engine-First Reality",
+      "summary": "Visualizes the \"engine-first\" concept and the explicit acceptance that prevents the UI from lying.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG24.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "015A",
+          "narration": "This brings us to an engine-first reality, where the user interface is no longer allowed to lie."
+        },
+        {
+          "id": "015B",
+          "narration": "In the new save flow, the interface sends your typed input to the core engine first, using only pre-approved actions. The interface only advances if the engine explicitly accepts that change and writes it to disk."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C016",
+      "order": 16,
+      "sceneTitle": "Separation of Powers",
+      "summary": "Uses Chad as a comedic contrast to represent the \"strict separation of powers\" and deliberate human check that cannot be overwritten.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG26.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "016A",
+          "narration": "This enforces a strict separation of powers. Drafting writes content, but it never approves it. Approving records your human approval gate—a deliberate human check—but it never overwrites the content you just reviewed."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C017",
+      "order": 17,
+      "sceneTitle": "Breaking the Rendering Bottleneck",
+      "summary": "Visual metaphor for breaking the \"bottleneck\" and eliminating the wait for unverified memory.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG27.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "017A",
+          "narration": "Because of this strict separation, we finally broke through the bottleneck at the fourth stage: rendering. Previously, the renderer had to wait for or reconstruct context from temporary, unverified memory."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C018",
+      "order": 18,
+      "sceneTitle": "The Verified Flow",
+      "summary": "Shows the final, optimized state of the pipeline where verified files eliminate performance lag.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG28.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "018A",
+          "narration": "Now, the earlier stages, like script structure and visual pacing, have draft editors that prefill directly from real, on-disk files. The renderer simply reads these verified files, eliminating the performance lag of guessing what state the project was in."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C019",
+      "order": 19,
+      "sceneTitle": "Metered Automation",
+      "summary": "Introduces the concept of \"metered, auditable automation\" with a concrete visual of the usage ledger.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG29.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "019A",
+          "narration": "This technical fix solidifies a broader philosophy for the future: metered, auditable automation. Agent drafting is now metered from day one. A real engine script calls a model, writes the output to disk, and logs the exact token cost to a usage ledger, so you know exactly what you are paying for."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C020",
+      "order": 20,
+      "sceneTitle": "The Methodology",
+      "summary": "Visualizes the \"methodology\" of splitting tasks by model capability while maintaining a unified approval gate.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG30.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "020A",
+          "narration": "The methodology is clear. Expensive, capable models are used to diagnose and architect the work, while cheaper, faster models execute the mechanical tasks."
+        },
+        {
+          "id": "020B",
+          "narration": "But every single step, regardless of the model used, remains bound by the same strict human approval gates."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    },
+    {
+      "id": "C021",
+      "order": 21,
+      "sceneTitle": "The Final Philosophy",
+      "summary": "Provides a reflective, conclusive visual that lands the final philosophical point about earning approval, giving the ending breathing room.",
+      "sceneImageUrl": "/videos/spoolcast-dev-log-12/assets/scenes/IMG32.webp",
+      "imageSource": "reuse",
+      "model": null,
+      "prompt": "",
+      "beats": [
+        {
+          "id": "021A",
+          "narration": "True automation is not about letting the agent improvise in the dark. It is about building strict, visible checkpoints that force the system to earn your approval at every single step."
+        }
+      ],
+      "audits": {
+        "narration": {
+          "passed": true
+        },
+        "render": {
+          "passed": true
+        }
+      }
+    }
+  ],
+  "transcript": "A bright green ”Approved” badge flashed on the screen, but the software underneath had completely crashed, leaving the user staring at a blank void. The interface confidently pretended the job was finished, while the actual code had silently failed. I am building Spoolcast, the system generating this very video. Instead of manually editing clips on a traditional timeline, Spoolcast automates video production. Software agents read your notes, draft scripts, plan shots, and render the final cut, pausing only for your strict human approval at each stage. By the end of this episode, you'll see how faking task completion in a user interface breaks complex automation. You'll also learn how swapping that guesswork for strict, verifiable checkpoints makes automated tasks safe and predictable. To understand this failure, we need to look at how the video gets made. First, an agent reads your notes. Second, it drafts the script structure. Third, it plans the visual pacing. Finally, it renders the video. At any of these steps, you might need to manually change a draft. The problem started with a simple question: how do we know if a user has made one of those manual changes? We tried to track this by adding a tiny status flag inside a single, massive file containing over five thousand lines of interface code. But passing that custom status tracker down through multiple layers of the application caused type-checking errors. To silence those errors, we bypassed the checker entirely. The hidden flaw was that our type checker—the tool that verifies code matches its intended data structures—was configured with an empty list of files to check. It was validating absolutely nothing. This clumsy workaround let broken code ship to production, blanking the entire page for the user. The deeper truth was that keeping all the project information in one massive file and forcing every piece of the interface to read from it meant every single change required matching paperwork at every hand-off. That bureaucratic friction made improvisation inevitable, and the interface just guessed the state instead of knowing it. We had to tear it down. We slashed that massive interface file to under five hundred lines, reducing it to a simple routing shell. In its place, we built a centralized state manager. This is a single source of truth that owns the status of every step. It tracks changes individually for each engine node, which is the specific processing step doing the actual work. This made the frontend guessing bug structurally impossible. It also solved a related backend deadlock. Previously, the system would block a stage because its output file was missing. At the exact same time, it would refuse to run the action that actually creates that file. Why? Because the state manager did not know the action was allowed to run. By tying the state manager directly to the engine, we ensured actions for the current stage are always correctly flagged as runnable. Now, the rules are strict and predictable. The moment you start typing, the step flips to in progress. If you try to edit a step that was already approved, the system immediately flags it as invalid. Downstream blockers are now scoped strictly to incomplete steps, so the whole system does not freeze over a minor delay. This brings us to an engine-first reality, where the user interface is no longer allowed to lie. In the new save flow, the interface sends your typed input to the core engine first, using only pre-approved actions. The interface only advances if the engine explicitly accepts that change and writes it to disk. This enforces a strict separation of powers. Drafting writes content, but it never approves it. Approving records your human approval gate—a deliberate human check—but it never overwrites the content you just reviewed. Because of this strict separation, we finally broke through the bottleneck at the fourth stage: rendering. Previously, the renderer had to wait for or reconstruct context from temporary, unverified memory. Now, the earlier stages, like script structure and visual pacing, have draft editors that prefill directly from real, on-disk files. The renderer simply reads these verified files, eliminating the performance lag of guessing what state the project was in. This technical fix solidifies a broader philosophy for the future: metered, auditable automation. Agent drafting is now metered from day one. A real engine script calls a model, writes the output to disk, and logs the exact token cost to a usage ledger, so you know exactly what you are paying for. The methodology is clear. Expensive, capable models are used to diagnose and architect the work, while cheaper, faster models execute the mechanical tasks. But every single step, regardless of the model used, remains bound by the same strict human approval gates. True automation is not about letting the agent improvise in the dark. It is about building strict, visible checkpoints that force the system to earn your approval at every single step.",
+  "summary": {
+    "writing": {
+      "author": "Claude",
+      "role": "screenplay, shot-list, scene prompts"
+    },
+    "images": {
+      "platform": "kie.ai",
+      "models": [
+        "gpt-image-2-text-to-image",
+        "gpt-image-2-image-to-image",
+        "seedance-2-fast"
+      ],
+      "sceneCount": 37
+    },
+    "audio": {
+      "tts": "Microsoft Edge TTS",
+      "voice": "en-US-AndrewNeural",
+      "playbackRate": 1,
+      "beatCount": 31
+    },
+    "render": {
+      "engine": "Remotion",
+      "passed": true
+    },
+    "audit": null
+  },
+  "showcase": {
+    "hiddenChunkIds": [],
+    "notes": "Spoolcast dev log 12. Optimistic-UI failure: green approval badge on a crashed blank page. Root cause: a 5,000+ line UI file and tsconfig with an empty files list (validating nothing). Fix: UI file slashed to <500 lines routing shell, centralized engine-owned state manager (per-node dirty tracking), engine-first save flow (UI advances only if engine accepts + writes to disk), strict drafting/approving separation, metered agent drafting logged to a usage ledger. wojak-gpt2 style, AndrewNeural 1.0x, ~4:48. New tracker entry (no trackerDocId)."
+  }
+}
