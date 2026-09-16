@@ -66,8 +66,12 @@ function filterHref(key: string, value?: string) {
               <div class="r-mic">{entry.day ? `d${entry.day}` : ""}</div>
             </div>
             <div class="detail">
-              {entry.embedType && entry.thumbnailUrl && (
-                <div class:list={["d-embed", entry.embedType]}>
+              {/* A picture shows because there IS one, not because the entry also
+                  has something to embed. The old test required embedType, which
+                  hid the picture on three entries that had one; the mobile view
+                  never had that test, so the two views disagreed. */}
+              {entry.thumbnailUrl && (
+                <div class:list={["d-embed", entry.embedType || "d"]}>
                   <img src={entry.thumbnailUrl} alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" />
                 </div>
               )}
