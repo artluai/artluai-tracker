@@ -377,6 +377,20 @@ artlu-tracker-mcp repo.
 
 ## Tracker Entry Best Practices
 
+### Merged is not shipped (learned the hard way, 2026-09-16)
+
+Before writing an entry, OPEN THE FEATURE and confirm a person can use it.
+Merge history is evidence that code landed, not that a feature works.
+
+This rule exists because an entry went up for creator pages, publishing and
+earnings, built from three merged PRs that each did what they said. The
+feature was not finished, and the founder caught it on the live site. Reading
+2,400 merge titles is how you find candidates; it is not how you confirm one.
+
+If you cannot reach the feature to check it, say so and leave the entry out,
+or add it with `visibility: private` and `status: building` until it ships.
+A tracker of 100 shipped things is worth nothing if one of them is not.
+
 ### New entry vs update existing
 
 **Default to new entry.** If you're unsure whether a piece of work should be a new tracker entry or an update to an existing one, make it a new entry. The 100 projects in 100 days goal is a forcing function — every shipped piece of work that can stand on its own counts as its own project. Only update an existing entry if the work is a pure bugfix, rename, or copy tweak on something already tracked.
