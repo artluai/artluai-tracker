@@ -92,7 +92,7 @@ export function isEmbeddable(url?: string | null) {
       "netlify.app", "vercel.app", "github.io", "pages.dev", "netlify.com",
       "render.com", "railway.app", "fly.dev", "surge.sh", "manus.computer",
       "manuspre.computer", "manus-asia.computer", "manuscomputer.ai",
-      "manusvm.computer", "adsmetri.com",
+      "manusvm.computer", "adsmetri.com", "freysa.dev",
     ];
     const deny = [
       "github.com", "youtube.com", "youtu.be", "loom.com", "screen.studio",
