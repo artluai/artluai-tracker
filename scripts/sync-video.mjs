@@ -245,7 +245,17 @@ function parseShortScriptMd(content) {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");                       // artluai-tracker/
-const CONTENT = path.resolve(ROOT, "..", "spoolcast-content");    // sibling
+// spoolcast-content went multi-user in July 2026: sessions/ and shows/ moved
+// under users/<uid>/. Prefer that layout when it is there, and fall back to
+// the flat one so an older checkout still syncs. Override the id with
+// SPOOLCAST_UID if the content belongs to a different account.
+function resolveContentRoot() {
+  const base = path.resolve(ROOT, "..", "spoolcast-content");     // sibling
+  const scoped = path.join(base, "users", process.env.SPOOLCAST_UID || "1");
+  const hasScoped = existsSync(path.join(scoped, "shows")) || existsSync(path.join(scoped, "sessions"));
+  return hasScoped ? scoped : base;
+}
+const CONTENT = resolveContentRoot();
 const PUBLIC_VIDEOS = path.join(ROOT, "public", "videos");
 const SHIPPED_MANIFEST = path.join(__dirname, "shipped-videos.json");
 
