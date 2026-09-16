@@ -11,9 +11,13 @@ export function slugify(value = "") {
 
 export function dayNum(dateStr?: string | null) {
   if (!dateStr) return null;
-  const start = new Date(`${START_DATE}T00:00:00`);
-  const date = new Date(`${dateStr}T00:00:00`);
-  const diff = Math.floor((date.getTime() - start.getTime()) / 86400000) + 1;
+  // Parse as UTC. Local midnight across a daylight-saving change makes the
+  // gap 23 or 25 hours, and Math.floor then drops a whole day: every date
+  // after the spring clock change used to read one short.
+  const start = Date.parse(`${START_DATE}T00:00:00Z`);
+  const date = Date.parse(`${dateStr}T00:00:00Z`);
+  if (Number.isNaN(start) || Number.isNaN(date)) return null;
+  const diff = Math.round((date - start) / 86400000) + 1;
   return diff >= 1 ? diff : null;
 }
 

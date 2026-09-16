@@ -18,14 +18,14 @@ const adminClass = sticky === "none" || isAdmin ? "admin-static" : "";
   <div class="brandwrap">
     <a class="brand" href="/">artlu.ai<span class="cursor-bl"></span></a>
     <div class="identity">
-      <div class="htitle">{isAdmin ? "admin dashboard" : "100 days. 100 features."}</div>
+      <div class="htitle">{isAdmin ? "admin dashboard" : "100 days. 100 features. Still building."}</div>
       <div class="hbio">{isAdmin ? "projects · series · entries · data operations" : "Just AI and an internet connection."}</div>
     </div>
   </div>
   <div class="hright">
     {!isAdmin && stats && (
       <div class="progress">
-        <span class="pcount">day <b>{stats.day}</b>/100 · <b>{stats.shipped}</b> shipped · <b>{stats.toGo}</b> to go</span>
+        <span class="pcount">day <b>{stats.day}</b> · <b>{stats.shipped}</b> shipped</span>
         <ActivityStrip cells={stats.activity} tooltip={heatmapTooltip} />
       </div>
     )}
