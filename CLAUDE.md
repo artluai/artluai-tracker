@@ -391,6 +391,23 @@ If you cannot reach the feature to check it, say so and leave the entry out,
 or add it with `visibility: private` and `status: building` until it ships.
 A tracker of 100 shipped things is worth nothing if one of them is not.
 
+**Name what you read, and which copy of it** (added 2026-09-16, after three
+more misses the same day). Reading the code is not the same as checking. Each
+of these produced a wrong published claim:
+
+- measured a host and called it the API — it was the admin console, and the
+  project's own README says which is which
+- counted a number out of a list without asking whether that list is the one
+  switched on in production — it had been measured, rejected and retired
+- found the retired list and counted it anyway — the file was inside a
+  three-week-old worktree, deleted from the live tree weeks earlier
+
+They are one mistake wearing three hats: the evidence was real, and it came
+from somewhere other than the thing being described. So: name the host, name
+the list, and name which checkout you read it from. `find` and `grep -r`
+happily search stale worktrees under `.claude/`; pass `git cat-file -e
+origin/main:<path>` when the question is what ships.
+
 ### New entry vs update existing
 
 **Default to new entry.** If you're unsure whether a piece of work should be a new tracker entry or an update to an existing one, make it a new entry. The 100 projects in 100 days goal is a forcing function — every shipped piece of work that can stand on its own counts as its own project. Only update an existing entry if the work is a pure bugfix, rename, or copy tweak on something already tracked.
