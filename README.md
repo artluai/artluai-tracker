@@ -23,6 +23,29 @@ Track everything you build with AI. Terminal-style project tracker with Firebase
 - Firebase (Firestore + Auth + Analytics)
 - Netlify (hosting)
 
+## AI-readable directory
+
+`/llms.txt` links to purpose groups and the complete public catalogue. `/ai/`
+contains static Markdown versions of project pages, research, build notes and
+video guidebooks. Public HTML pages advertise their Markdown counterpart through
+head metadata; visitor markup, styles and interactions are unchanged.
+
+- Content owner: the existing Firestore public records, research collection and
+  published video bundles, read through the site's existing data layer.
+- Navigation owner: `src/lib/agent-groups.ts`. Its parent-ID lists put VibeSkill
+  under Other tools for this directory only. New public parent groups are included
+  automatically; there are no per-entry name rules.
+- Generator: `src/lib/agent-content.ts`. Both endpoints and page metadata use this
+  generator. It selects public fields explicitly, excludes attachments and raw
+  embedded/archive HTML, and retains recorded status without claiming live tests.
+- Publishing: the existing `npm run sync:data && npm run validate:stack && npm run
+  build:strict` pipeline regenerates all output. Content changes reach the
+  directory on the next deployment, not immediately after a database edit.
+- `public/_headers` supplies Markdown content types on Netlify. No additional
+  service, runtime API, database schema or AI generation call is required.
+
+Do not edit generated Markdown in `dist/`; update its existing source record.
+
 ## Features
 
 - Public project table with expanded detail rows (info / live demo / files tabs)
