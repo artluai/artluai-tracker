@@ -3,6 +3,11 @@
   publish = "dist"
 
 [[redirects]]
+  from = "/project/costintel-ecommerce-analytics"
+  to = "/project/costintel-ecommerce-fulfillment-analytics-dashboard/"
+  status = 301
+
+[[redirects]]
   from = "/journal"
   to = "/log"
   status = 301
